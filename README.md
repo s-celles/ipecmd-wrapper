@@ -39,7 +39,7 @@ ipecmd-wrapper -P PIC16F876A -T PK3 -F build/main.hex -W 5.0 --ipecmd-version 6.
 ## Supported Programmers
 
 - PICkit3 (PK3)
-- PICkit4 (PK4) 
+- PICkit4 (PK4)
 - PICkit5 (PK5)
 - ICD3, ICD4, ICD5
 - ICE4, RICE

@@ -5,10 +5,11 @@ This module contains the main functions for interacting with MPLAB IPE's IPECMD 
 """
 
 import os
-import sys
 import subprocess
+import sys
 from typing import Dict, List, Optional
-from colorama import init, Fore, Style
+
+from colorama import Fore, Style, init
 
 # Initialize colorama for cross-platform support
 init(autoreset=True)
@@ -33,7 +34,7 @@ class Colors:
 # Available tool choices
 TOOL_CHOICES = [
     "PK3",
-    "PK4", 
+    "PK4",
     "PK5",
     "ICD3",
     "ICD4",
@@ -54,7 +55,7 @@ VERSION_CHOICES = ["5.50", "6.20"]
 TOOL_MAP = {
     "PK3": "TPPK3",
     "PK4": "TPPK4",
-    "PK5": "TPPK5", 
+    "PK5": "TPPK5",
     "ICD3": "TPICD3",
     "ICD4": "TPICD4",
     "ICD5": "TPICD5",
@@ -68,17 +69,19 @@ TOOL_MAP = {
 }
 
 
-def get_ipecmd_path(version: Optional[str] = None, custom_path: Optional[str] = None) -> str:
+def get_ipecmd_path(
+    version: Optional[str] = None, custom_path: Optional[str] = None
+) -> str:
     """
     Get the path to IPECMD executable
-    
+
     Args:
         version: MPLAB X IDE version string (e.g., '6.20')
         custom_path: Custom path to ipecmd.exe
-        
+
     Returns:
         str: Path to ipecmd.exe
-        
+
     Raises:
         ValueError: If neither version nor custom_path is provided
     """
@@ -93,11 +96,11 @@ def get_ipecmd_path(version: Optional[str] = None, custom_path: Optional[str] = 
 def validate_ipecmd(ipecmd_path: str, version_info: str) -> bool:
     """
     Validate that IPECMD exists and is accessible
-    
+
     Args:
         ipecmd_path: Path to ipecmd.exe
         version_info: Version information string for error messages
-        
+
     Returns:
         bool: True if IPECMD is valid, False otherwise
     """
@@ -111,7 +114,7 @@ def validate_ipecmd(ipecmd_path: str, version_info: str) -> bool:
                 Colors.YELLOW,
             )
         return False
-    
+
     print_colored("✓ IPECMD found", Colors.GREEN)
     return True
 
@@ -119,10 +122,10 @@ def validate_ipecmd(ipecmd_path: str, version_info: str) -> bool:
 def validate_hex_file(hex_file_path: str) -> bool:
     """
     Validate that HEX file exists
-    
+
     Args:
         hex_file_path: Path to HEX file
-        
+
     Returns:
         bool: True if HEX file exists, False otherwise
     """
@@ -130,7 +133,7 @@ def validate_hex_file(hex_file_path: str) -> bool:
         print_colored(f"✗ HEX file not found: {hex_file_path}", Colors.RED)
         print_colored("Compile first with: python compile.py", Colors.YELLOW)
         return False
-    
+
     print_colored(f"✓ HEX file found: {hex_file_path}", Colors.GREEN)
     return True
 
@@ -138,66 +141,66 @@ def validate_hex_file(hex_file_path: str) -> bool:
 def build_ipecmd_command(args, ipecmd_path: str) -> List[str]:
     """
     Build IPECMD command arguments
-    
+
     Args:
         args: Parsed command line arguments
         ipecmd_path: Path to ipecmd.exe
-        
+
     Returns:
         List[str]: Command arguments for IPECMD
     """
     # Get tool mapping
     tool_option = TOOL_MAP[args.tool]
-    
+
     # Build command arguments
     cmd_args = [ipecmd_path]
-    
+
     # Add tool selection
     cmd_args.append(f"-{tool_option}")
-    
+
     # Add part selection
     cmd_args.append(f"-P{args.part}")
-    
+
     # Add hex file
     cmd_args.append(f"-F{args.file}")
-    
+
     # Add programming option
     if args.memory:
         cmd_args.append(f"-M{args.memory}")
     else:
         cmd_args.append("-M")  # Program entire device
-    
+
     # Add verification option
     if args.verify:
         cmd_args.append(f"-Y{args.verify}")
-    
+
     # Add power option
     cmd_args.append(f"-W{args.power}")
-    
+
     # Add erase option
     if args.erase:
         cmd_args.append("-E")
-    
+
     # Add VDD first option
     if args.vdd_first:
         cmd_args.append("-OD")
-    
+
     # Add logout option
     if args.logout:
         cmd_args.append("-OL")
-    
+
     return cmd_args
 
 
 def test_programmer_detection(ipecmd_path: str, part: str, tool: str) -> bool:
     """
     Test programmer detection
-    
+
     Args:
         ipecmd_path: Path to ipecmd.exe
         part: Target microcontroller part number
         tool: Programmer tool name
-        
+
     Returns:
         bool: True if programmer detection successful, False otherwise
     """
@@ -205,7 +208,7 @@ def test_programmer_detection(ipecmd_path: str, part: str, tool: str) -> bool:
     tool_option = TOOL_MAP[tool]
     test_cmd = [ipecmd_path, f"-{tool_option}", f"-P{part}", "-OK"]
     print_colored(f'Command: "{ipecmd_path}" -{tool_option} -P{part} -OK', Colors.CYAN)
-    
+
     try:
         result = subprocess.run(test_cmd, capture_output=True, text=True)
         if result.returncode != 0:
@@ -221,32 +224,34 @@ def test_programmer_detection(ipecmd_path: str, part: str, tool: str) -> bool:
         return False
 
 
-def execute_programming(cmd_args: List[str], part: str, tool: str, ipecmd_version: Optional[str]) -> bool:
+def execute_programming(
+    cmd_args: List[str], part: str, tool: str, ipecmd_version: Optional[str]
+) -> bool:
     """
     Execute the programming command
-    
+
     Args:
         cmd_args: Command arguments for IPECMD
         part: Target microcontroller part number
         tool: Programmer tool name
         ipecmd_version: IPECMD version for error suggestions
-        
+
     Returns:
         bool: True if programming successful, False otherwise
     """
     print_colored("\nAttempting to program...", Colors.YELLOW)
     cmd_str = f'"{cmd_args[0]}" ' + " ".join(cmd_args[1:])
     print_colored(f"Command: {cmd_str}", Colors.CYAN)
-    
+
     try:
         result = subprocess.run(cmd_args, capture_output=True, text=True)
-        
+
         # Print output
         if result.stdout:
             print(result.stdout)
         if result.stderr:
             print(result.stderr)
-        
+
         if result.returncode == 0:
             print_colored(f"\n🎉 SUCCESS! PIC {part} programmed!", Colors.GREEN)
             print_colored(
@@ -265,7 +270,7 @@ def execute_programming(cmd_args: List[str], part: str, tool: str, ipecmd_versio
                     "You can also try with --ipecmd-version 5.50", Colors.CYAN
                 )
             return False
-            
+
     except Exception as e:
         print_colored(f"\n✗ Error running programming command: {e}", Colors.RED)
         return False
@@ -274,10 +279,10 @@ def execute_programming(cmd_args: List[str], part: str, tool: str, ipecmd_versio
 def program_pic(args) -> None:
     """
     Main function to program PIC microcontroller
-    
+
     Args:
         args: Parsed command line arguments
-        
+
     Raises:
         SystemExit: If programming fails or requirements are not met
     """
@@ -289,32 +294,33 @@ def program_pic(args) -> None:
     else:
         ipecmd_path = get_ipecmd_path(version=args.ipecmd_version)
         version_info = f"v{args.ipecmd_version}"
-    
+
     # Validate HEX file
     if not validate_hex_file(args.file):
         sys.exit(1)
-    
+
     # Validate IPECMD
     if not validate_ipecmd(ipecmd_path, version_info):
         sys.exit(1)
-    
+
     # Display configuration
     print_colored("\nProgramming in progress...", Colors.YELLOW)
     print_colored("Make sure that:", Colors.BLUE)
     print_colored(f"  - {args.tool} is connected via USB", Colors.GRAY)
     print_colored(f"  - PIC {args.part} is in the socket", Colors.GRAY)
     print_colored(
-        f"  - Circuit will be powered by {args.tool} (voltage: {args.power}V)", Colors.GRAY
+        f"  - Circuit will be powered by {args.tool} (voltage: {args.power}V)",
+        Colors.GRAY,
     )
-    
+
     # Test programmer detection if requested
     if args.test_programmer:
         if not test_programmer_detection(ipecmd_path, args.part, args.tool):
             sys.exit(1)
-    
+
     # Build command
     cmd_args = build_ipecmd_command(args, ipecmd_path)
-    
+
     # Execute programming
     if not execute_programming(cmd_args, args.part, args.tool, args.ipecmd_version):
         sys.exit(1)
