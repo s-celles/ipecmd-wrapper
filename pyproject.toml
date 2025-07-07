@@ -5,24 +5,24 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ipecmd-wrapper"
 version = "0.1.0"
-description = "IPECMD Wrapper for PIC Microcontroller Programming"
+description = "IPECMD Wrapper for PIC Microcontrollers Programming"
 authors = [
     {name = "Sébastien Celles", email = "s.celles@gmail.com"}
 ]
 license = {text = "MIT"}
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 keywords = ["ipecmd", "pic", "microcontroller", "programming", "embedded", "pickit"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Embedded Systems",
     "Topic :: System :: Hardware",
 ]
@@ -32,30 +32,149 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=6.0",
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "pytest-xdist>=3.0",
     "black>=22.0",
     "flake8>=4.0",
     "mypy>=0.910",
+    "pre-commit>=2.20",
+    "coverage>=6.0",
+    "isort>=5.0",
+    "bandit>=1.7",
+    "safety>=2.0",
+    # Ensure we have proper packaging tools for all platforms
+    "setuptools>=45",
+    "wheel>=0.37",
+]
+docs = [
+    "mkdocs>=1.4",
+    "mkdocs-material>=8.0",
+    "mkdocs-git-revision-date-localized-plugin>=1.0",
 ]
 
 [project.urls]
-Homepage = "https://github.com/s-celles/ipecmd-wrapper"
+Homepage = "https://s-celles.github.io/ipecmd-wrapper/"
+Documentation = "https://s-celles.github.io/ipecmd-wrapper/"
 Repository = "https://github.com/s-celles/ipecmd-wrapper"
 Issues = "https://github.com/s-celles/ipecmd-wrapper/issues"
+Changelog = "https://github.com/s-celles/ipecmd-wrapper/blob/main/CHANGELOG.md"
 
 [project.scripts]
 ipecmd-wrapper = "ipecmd_wrapper.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["ipecmd_wrapper*"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=ipecmd_wrapper",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-fail-under=80",
+]
+testpaths = [
+    "tests",
+]
+python_files = [
+    "test_*.py",
+]
+python_classes = [
+    "Test*",
+]
+python_functions = [
+    "test_*",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "cli: marks tests as CLI tests",
+    "core: marks tests as core functionality tests",
+    "performance: marks tests as performance tests",
+    "compatibility: marks tests as compatibility tests",
+]
+
+[tool.coverage.run]
+source = ["ipecmd_wrapper"]
+omit = [
+    "tests/*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+    "setup_dev.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
 
 [tool.black]
 line-length = 88
-target-version = ['py38']
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 88
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+max-complexity = 10
+per-file-ignores = [
+    "tests/*:S101",
+    "setup_dev.py:S404,S602",
+]

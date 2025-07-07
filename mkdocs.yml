@@ -1,0 +1,77 @@
+site_name: IPECMD Wrapper
+site_description: IPECMD Toolchain Wrapper for PIC Microcontrollers
+site_author: Sébastien Celles
+site_url: https://s-celles.github.io/ipecmd-wrapper/
+
+repo_name: s-celles/ipecmd-wrapper
+repo_url: https://github.com/s-celles/ipecmd-wrapper
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  features:
+    - navigation.top
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+plugins:
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: installation.md
+    - Quick Start: quickstart.md
+    - Configuration: configuration.md
+  - Usage:
+    - Command Line: cli.md
+    - Python API: api.md
+    - Examples: examples.md
+  - Development:
+    - Contributing: contributing.md
+    - Development Guide: development.md
+    - API Reference: reference.md
+  - About:
+    - Changelog: changelog.md
+    - License: license.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/s-celles/ipecmd-wrapper
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/ipecmd-wrapper/
