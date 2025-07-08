@@ -88,23 +88,33 @@ def get_ipecmd_path(
     if custom_path:
         return custom_path
     elif version:
-        # Cross-platform path handling - use forward slashes and convert at the end
+        # Cross-platform path handling using pathlib
         if sys.platform == "win32":
             path = (
-                f"C:/Program Files/Microchip/MPLABX/v{version}/"
-                f"mplab_platform/mplab_ipe/ipecmd.exe"
+                Path("C:/Program Files/Microchip/MPLABX")
+                / f"v{version}"
+                / "mplab_platform"
+                / "mplab_ipe"
+                / "ipecmd.exe"
             )
         elif sys.platform == "darwin":  # macOS
             path = (
-                f"/Applications/microchip/mplabx/v{version}/"
-                f"mplab_platform/mplab_ipe/ipecmd"
+                Path("/Applications/microchip/mplabx")
+                / f"v{version}"
+                / "mplab_platform"
+                / "mplab_ipe"
+                / "ipecmd"
             )
         else:  # Linux and other Unix systems
             path = (
-                f"/opt/microchip/mplabx/v{version}/" f"mplab_platform/mplab_ipe/ipecmd"
+                Path("/opt/microchip/mplabx")
+                / f"v{version}"
+                / "mplab_platform"
+                / "mplab_ipe"
+                / "ipecmd"
             )
 
-        return path
+        return path.as_posix()
     else:
         raise ValueError("Either version or custom_path must be provided")
 
