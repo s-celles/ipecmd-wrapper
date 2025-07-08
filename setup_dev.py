@@ -68,7 +68,7 @@ def check_git() -> bool:
     try:
         result = subprocess.run(
             ["git", "--version"], capture_output=True, text=True, check=True
-        )
+        )  # nosec B603 B607
         print(result.stdout.strip())
         print_colored("✅ Git is available", Colors.GREEN)
         return True
@@ -241,9 +241,7 @@ def main() -> int:
         sys.exit(1)
 
     if not check_git():
-        print_colored(
-            "⚠️  Git is not available, but continuing setup...", Colors.YELLOW
-        )
+        print_colored("⚠️  Git not available, continuing setup...", Colors.YELLOW)
 
     # Setup steps
     steps = [
