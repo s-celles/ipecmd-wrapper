@@ -50,7 +50,7 @@ class TestPythonVersionCompatibility:
             mock_run.return_value.stdout = "MPLAB IPE version 6.20"
             mock_run.return_value.stderr = ""
 
-            result = validate_ipecmd("test_path")
+            result = validate_ipecmd("test_path", "6.20")
             assert isinstance(result, bool)
 
     def test_string_formatting_compatibility(self):
@@ -68,12 +68,12 @@ class TestPythonVersionCompatibility:
     def test_type_hints_compatibility(self):
         """Test that type hints don't break execution"""
         # Import modules that use type hints
-        from ipecmd_wrapper.cli import parse_arguments
+        from ipecmd_wrapper.cli import create_argument_parser
         from ipecmd_wrapper.core import get_ipecmd_path
 
         # These should work regardless of type hint support
         assert callable(get_ipecmd_path)
-        assert callable(parse_arguments)
+        assert callable(create_argument_parser)
 
 
 @pytest.mark.compatibility
@@ -215,9 +215,12 @@ class TestIntegrationCompatibility:
 
         for cmd in test_commands:
             # Should handle different argument formats
-            from ipecmd_wrapper.cli import parse_arguments
+            from ipecmd_wrapper.cli import create_argument_parser
 
-            args = parse_arguments(cmd)
+            parser = create_argument_parser()
+            # Add required power argument to test commands
+            cmd_with_power = cmd + ["-W", "5.0"]
+            args = parser.parse_args(cmd_with_power)
             assert hasattr(args, "part")
             assert hasattr(args, "tool")
             assert hasattr(args, "file")

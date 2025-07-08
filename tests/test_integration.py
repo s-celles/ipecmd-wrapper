@@ -44,6 +44,8 @@ class TestIntegration:
                         "PK3",
                         "-F",
                         "test.hex",
+                        "-W",
+                        "5.0",
                         "--ipecmd-version",
                         "6.20",
                     ]
@@ -121,6 +123,8 @@ class TestIntegration:
                         "PK3",
                         "-F",
                         "test.hex",
+                        "-W",
+                        "5.0",
                         "--ipecmd-version",
                         "6.20",
                     ]
@@ -151,6 +155,8 @@ class TestIntegration:
                         "PK3",
                         "-F",
                         "test.hex",
+                        "-W",
+                        "5.0",
                         "--ipecmd-path",
                         r"C:\custom\path\ipecmd.exe",
                     ]
@@ -159,7 +165,9 @@ class TestIntegration:
                 pass
 
             # Verify custom configuration was used
-            mock_validate.assert_called_with(r"C:\custom\path\ipecmd.exe")
+            mock_validate.assert_called_with(
+                r"C:\custom\path\ipecmd.exe", "custom path"
+            )
 
 
 @pytest.mark.integration

@@ -5,9 +5,9 @@ This module contains the main functions for interacting with MPLAB IPE's IPECMD 
 """
 
 import os
-import subprocess
+import subprocess  # nosec B404
 import sys
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from colorama import Fore, Style, init
 
@@ -142,7 +142,7 @@ def validate_hex_file(hex_file_path: str) -> bool:
     return True
 
 
-def build_ipecmd_command(args: object, ipecmd_path: str) -> List[str]:
+def build_ipecmd_command(args: Any, ipecmd_path: str) -> List[str]:
     """
     Build IPECMD command arguments
 
@@ -196,7 +196,7 @@ def build_ipecmd_command(args: object, ipecmd_path: str) -> List[str]:
     return cmd_args
 
 
-def test_programmer_detection(ipecmd_path: str, part: str, tool: str) -> bool:
+def detect_programmer(ipecmd_path: str, part: str, tool: str) -> bool:
     """
     Test programmer detection
 
@@ -214,7 +214,7 @@ def test_programmer_detection(ipecmd_path: str, part: str, tool: str) -> bool:
     print_colored(f'Command: "{ipecmd_path}" -{tool_option} -P{part} -OK', Colors.CYAN)
 
     try:
-        result = subprocess.run(test_cmd, capture_output=True, text=True)
+        result = subprocess.run(test_cmd, capture_output=True, text=True)  # nosec B603
         if result.returncode != 0:
             print_colored("\n✗ Programmer detection failed!", Colors.RED)
             print_colored("Check programmer connection and try again", Colors.YELLOW)
@@ -248,7 +248,7 @@ def execute_programming(
     print_colored(f"Command: {cmd_str}", Colors.CYAN)
 
     try:
-        result = subprocess.run(cmd_args, capture_output=True, text=True)
+        result = subprocess.run(cmd_args, capture_output=True, text=True)  # nosec B603
 
         # Print output
         if result.stdout:
@@ -280,7 +280,7 @@ def execute_programming(
         return False
 
 
-def program_pic(args: object) -> None:
+def program_pic(args: Any) -> None:
     """
     Main function to program PIC microcontroller
 
@@ -319,7 +319,7 @@ def program_pic(args: object) -> None:
 
     # Test programmer detection if requested
     if args.test_programmer:
-        if not test_programmer_detection(ipecmd_path, args.part, args.tool):
+        if not detect_programmer(ipecmd_path, args.part, args.tool):
             sys.exit(1)
 
     # Build command

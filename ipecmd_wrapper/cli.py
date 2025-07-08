@@ -6,6 +6,7 @@ This module provides the main entry point for the IPECMD wrapper.
 """
 
 import argparse
+import sys
 from typing import List, Optional
 
 from colorama import Fore, Style, init
@@ -123,8 +124,12 @@ def main(argv: Optional[List[str]] = None) -> None:
     if not args.ipecmd_version and not args.ipecmd_path:
         parser.error("Either --ipecmd-version or --ipecmd-path must be provided")
 
-    # Call the main programming function
-    program_pic(args)
+    # Call the main programming function with error handling
+    try:
+        program_pic(args)
+    except (ValueError, FileNotFoundError, Exception) as e:
+        print_colored(f"Error: {e}", Colors.CYAN)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

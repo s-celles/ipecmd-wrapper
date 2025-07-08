@@ -56,7 +56,7 @@ class TestPerformance:
 
             # Run validation multiple times
             for _ in range(50):
-                validate_ipecmd(r"C:\test\ipecmd.exe")
+                validate_ipecmd(r"C:\test\ipecmd.exe", "6.20")
 
             end_time = time.time()
             execution_time = end_time - start_time
@@ -75,6 +75,8 @@ class TestPerformance:
                 "PK3",
                 "-F",
                 "test.hex",
+                "-W",
+                "5.0",
                 "--ipecmd-version",
                 "6.20",
             ],
@@ -133,13 +135,22 @@ class TestPerformance:
                 mock_exists.return_value = True
                 path = get_ipecmd_path("6.20")
                 validate_hex_file("test.hex")
-                build_ipecmd_command(
-                    ipecmd_path=path,
-                    part="16F876A",
+
+                # Create a mock args object
+                from types import SimpleNamespace
+
+                mock_args = SimpleNamespace(
                     tool="PK3",
-                    hex_file="test.hex",
-                    power_voltage=5.0,
+                    part="16F876A",
+                    file="test.hex",
+                    memory="",
+                    verify="",
+                    power="5.0",
+                    erase=False,
+                    logout=False,
+                    vdd_first=False,
                 )
+                build_ipecmd_command(mock_args, path)
 
         # Force garbage collection
         gc.collect()
@@ -158,15 +169,20 @@ class TestPerformance:
 
         # Build commands multiple times with different parameters
         for i in range(1000):
-            build_ipecmd_command(
-                ipecmd_path=f"C:\\test\\ipecmd{i % 10}.exe",
-                part=f"16F87{i % 10}A",
+            from types import SimpleNamespace
+
+            mock_args = SimpleNamespace(
                 tool=["PK3", "PK4", "ICD3"][i % 3],
-                hex_file=f"test{i}.hex",
-                power_voltage=3.3 + (i % 3) * 0.5,
-                erase=i % 2 == 0,
+                part=f"16F87{i % 10}A",
+                file=f"test{i}.hex",
+                memory="",
                 verify=["N", "P", "C"][i % 3],
+                power=str(3.3 + (i % 3) * 0.5),
+                erase=i % 2 == 0,
+                logout=False,
+                vdd_first=False,
             )
+            build_ipecmd_command(mock_args, f"C:\\test\\ipecmd{i % 10}.exe")
 
         end_time = time.time()
         execution_time = end_time - start_time

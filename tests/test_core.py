@@ -13,8 +13,8 @@ from ipecmd_wrapper.core import (
     TOOL_MAP,
     VERSION_CHOICES,
     build_ipecmd_command,
+    detect_programmer,
     get_ipecmd_path,
-    test_programmer_detection,
     validate_hex_file,
     validate_ipecmd,
 )
@@ -181,7 +181,7 @@ class TestProgrammerDetection:
         mock_result.returncode = 0
         mock_run.return_value = mock_result
 
-        result = test_programmer_detection("ipecmd.exe", "PIC16F876A", "PK3")
+        result = detect_programmer("ipecmd.exe", "PIC16F876A", "PK3")
         assert result is True
 
     @patch("subprocess.run")
@@ -192,7 +192,7 @@ class TestProgrammerDetection:
         mock_result.stderr = "Error message"
         mock_run.return_value = mock_result
 
-        result = test_programmer_detection("ipecmd.exe", "PIC16F876A", "PK3")
+        result = detect_programmer("ipecmd.exe", "PIC16F876A", "PK3")
         assert result is False
 
     @patch("subprocess.run")
@@ -200,7 +200,7 @@ class TestProgrammerDetection:
         """Test programmer detection with exception"""
         mock_run.side_effect = Exception("Test exception")
 
-        result = test_programmer_detection("ipecmd.exe", "PIC16F876A", "PK3")
+        result = detect_programmer("ipecmd.exe", "PIC16F876A", "PK3")
         assert result is False
 
 
