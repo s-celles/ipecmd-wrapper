@@ -5,7 +5,6 @@ Basic test suite for the IPECMD wrapper core functionality.
 """
 
 import sys
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -31,20 +30,21 @@ class TestIPECMDPath:
         """Test getting IPECMD path with version"""
         path = get_ipecmd_path(version="6.20")
 
-        # Cross-platform expected path
+        # Cross-platform expected path - now using string formatting for consistency
         if sys.platform == "win32":
-            expected_base = Path("C:/Program Files/Microchip/MPLABX")
-            executable = "ipecmd.exe"
+            expected_path = (
+                "C:/Program Files/Microchip/MPLABX/v6.20/"
+                "mplab_platform/mplab_ipe/ipecmd.exe"
+            )
         elif sys.platform == "darwin":  # macOS
-            expected_base = Path("/Applications/microchip/mplabx")
-            executable = "ipecmd"
+            expected_path = (
+                "/Applications/microchip/mplabx/v6.20/mplab_platform/mplab_ipe/ipecmd"
+            )
         else:  # Linux and other Unix systems
-            expected_base = Path("/opt/microchip/mplabx")
-            executable = "ipecmd"
+            expected_path = (
+                "/opt/microchip/mplabx/v6.20/mplab_platform/mplab_ipe/ipecmd"
+            )
 
-        expected_path = str(
-            expected_base / "v6.20" / "mplab_platform" / "mplab_ipe" / executable
-        )
         assert path == expected_path
 
     def test_get_ipecmd_path_with_custom_path(self):

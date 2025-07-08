@@ -90,7 +90,10 @@ class TestPlatformCompatibility:
             # Should use Windows path format
             assert "Program Files" in path
             assert path.endswith("ipecmd.exe")
-            assert "\\" in path  # Windows path separator
+            # Check that it's a Windows-style path structure
+            assert "C:" in path or "C:/" in path
+            assert "Microchip" in path
+            assert "MPLABX" in path
 
     @patch("sys.platform", "linux")
     def test_linux_path_handling(self):
@@ -99,10 +102,11 @@ class TestPlatformCompatibility:
             mock_exists.return_value = False  # Force default path selection
             path = get_ipecmd_path("6.20")
 
-            # Should handle Linux case (though IPECMD is Windows-only)
-            # The function should still return a path without crashing
-            assert isinstance(path, str)
-            assert len(path) > 0
+            # Should use Linux path format
+            assert path.startswith("/opt/microchip/mplabx")
+            assert path.endswith("ipecmd")  # No .exe extension on Linux
+            assert "v6.20" in path
+            assert "mplab_platform" in path
 
     @patch("sys.platform", "darwin")
     def test_macos_path_handling(self):
@@ -111,10 +115,11 @@ class TestPlatformCompatibility:
             mock_exists.return_value = False  # Force default path selection
             path = get_ipecmd_path("6.20")
 
-            # Should handle macOS case (though IPECMD is Windows-only)
-            # The function should still return a path without crashing
-            assert isinstance(path, str)
-            assert len(path) > 0
+            # Should use macOS path format
+            assert path.startswith("/Applications/microchip/mplabx")
+            assert path.endswith("ipecmd")  # No .exe extension on macOS
+            assert "v6.20" in path
+            assert "mplab_platform" in path
 
     def test_unicode_path_handling(self):
         """Test Unicode characters in file paths"""
