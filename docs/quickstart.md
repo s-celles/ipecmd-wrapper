@@ -1,29 +1,29 @@
-# Quick Start Guide
+# 🚀 Quick Start Guide
 
 This guide will help you get started with IPECMD Wrapper quickly.
 
-## Prerequisites
+## 📋 Prerequisites
 
-- Python 3.9+
-- IPECMD installed (comes with MPLAB X IDE)
-- PIC programmer hardware (PICkit 3, PICkit 4, etc.)
-- Compiled hex file for your PIC microcontroller
+- 🐍 Python 3.9+
+- 🔧 IPECMD installed (comes with MPLAB X IDE)
+- 📱 PIC programmer hardware (PICkit 3, PICkit 4, etc.)
+- 📄 Compiled hex file for your PIC microcontroller
 
-## Basic Usage
+## 🎯 Basic Usage
 
-### 1. Install IPECMD Wrapper
+### 1️⃣ Install IPECMD Wrapper
 
 ```bash
 pip install ipecmd-wrapper
 ```
 
-### 2. Program a PIC Microcontroller
+### 2️⃣ Program a PIC Microcontroller
 
 ```bash
 ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0
 ```
 
-### 3. Verify Programming
+### 3️⃣ Verify Programming
 
 ```bash
 ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --verify P

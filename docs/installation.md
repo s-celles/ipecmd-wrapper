@@ -1,29 +1,29 @@
-# Installation Guide
+# 📦 Installation Guide
 
-## Requirements
+## 📋 Requirements
 
 Before installing IPECMD Wrapper, ensure you have:
 
-- Python 3.9 or higher
-- IPECMD installed and accessible in your PATH
-- Compatible PIC programmer hardware
+- 🐍 Python 3.9 or higher
+- 🔧 IPECMD installed and accessible in your PATH
+- 📱 Compatible PIC programmer hardware
 
-## Installing IPECMD
+## 🔧 Installing IPECMD
 
-IPECMD comes as part of the MPLAB X IDE installation. Download and install MPLAB X IDE from the [Microchip website](https://www.microchip.com/mplab/mplab-x-ide).
+IPECMD comes as part of the MPLAB X IDE installation. Download and install MPLAB X IDE from the [🏢 Microchip website](https://www.microchip.com/mplab/mplab-x-ide).
 
-### Windows
+### 🖥️ Windows
 After installing MPLAB X IDE, IPECMD is typically located at:
 ```
 C:\Program Files\Microchip\MPLABX\v[version]\mplab_platform\mplab_ipe\ipecmd.exe
 ```
 
-### Linux
+### 🐧 Linux
 ```
 /opt/microchip/mplabx/v[version]/mplab_platform/mplab_ipe/ipecmd
 ```
 
-### macOS
+### 🍎 macOS
 ```
 /Applications/microchip/mplabx/v[version]/mplab_platform/mplab_ipe/ipecmd
 ```
