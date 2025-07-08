@@ -69,7 +69,7 @@ else:
 - 🔧 IPECMD installed and accessible in PATH
 - 📱 Compatible PIC programmer hardware
 
-## 📚 Documentation
+## Documentation
 
 - [📦 Installation Guide](installation.md)
 - [🚀 Quick Start](quickstart.md)
@@ -86,7 +86,14 @@ We welcome contributions! Please see our [🤝 Contributing Guide](contributing.
 
 This project is licensed under the MIT License - see the [📄 LICENSE](license.md) file for details.
 
-## 💬 Support
+## Related Projects
+
+- **[🔧 XC8 Wrapper](https://s-celles.github.io/xc8-wrapper/)** - Modern Python wrapper for the XC8 C compiler toolchain
+  - Perfect companion for compiling PIC microcontroller firmware before programming
+  - Cross-platform support for Windows, Linux, and macOS
+  - [GitHub Repository](https://github.com/s-celles/xc8-wrapper)
+
+## Support
 
 - [🐛 GitHub Issues](https://github.com/s-celles/ipecmd-wrapper/issues)
 - [💡 Feature Requests](https://github.com/s-celles/ipecmd-wrapper/discussions)
