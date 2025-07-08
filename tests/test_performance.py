@@ -5,11 +5,12 @@ Test the performance characteristics of the IPECMD wrapper.
 """
 
 import time
+from typing import Any
 from unittest.mock import patch
 
 import pytest
 
-from ipecmd_wrapper.cli import create_argument_parser, main
+from ipecmd_wrapper.cli import create_argument_parser
 from ipecmd_wrapper.core import (
     build_ipecmd_command,
     get_ipecmd_path,
@@ -119,7 +120,6 @@ class TestPerformance:
     def test_memory_usage_stability(self):
         """Test that memory usage remains stable"""
         import gc
-        import sys
 
         # Force garbage collection
         gc.collect()
@@ -213,7 +213,7 @@ class TestScalability:
         import queue
         import threading
 
-        results_queue = queue.Queue()
+        results_queue: queue.Queue[Any] = queue.Queue()
 
         def worker():
             """Worker function to simulate concurrent operations"""
@@ -221,7 +221,7 @@ class TestScalability:
                 with patch("pathlib.Path.exists") as mock_exists:
                     mock_exists.return_value = True
                     for _ in range(10):
-                        path = get_ipecmd_path("6.20")
+                        get_ipecmd_path("6.20")
                         validate_hex_file("test.hex")
                 results_queue.put(True)
             except Exception as e:

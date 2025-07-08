@@ -13,7 +13,6 @@ from unittest.mock import patch
 import pytest
 
 from ipecmd_wrapper.core import (
-    build_ipecmd_command,
     get_ipecmd_path,
     validate_hex_file,
     validate_ipecmd,
@@ -28,7 +27,8 @@ class TestPythonVersionCompatibility:
         """Test pathlib usage across Python versions"""
         # Test Path operations that might vary across versions
         test_path = Path(
-            "C:\\Program Files\\Microchip\\MPLABX\\v6.20\\mplab_platform\\mplab_ipe\\ipecmd.exe"
+            "C:\\Program Files\\Microchip\\MPLABX\\v6.20\\mplab_platform\\"
+            "mplab_ipe\\ipecmd.exe"
         )
 
         # These operations should work in Python 3.9+
@@ -44,8 +44,6 @@ class TestPythonVersionCompatibility:
 
     def test_subprocess_compatibility(self):
         """Test subprocess usage across Python versions"""
-        import subprocess
-
         # Test subprocess.run with text parameter (Python 3.7+)
         with patch("subprocess.run") as mock_run:
             mock_run.return_value.returncode = 0

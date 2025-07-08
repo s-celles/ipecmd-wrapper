@@ -4,7 +4,7 @@ Tests for CLI module
 Test suite for the command-line interface functionality.
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 

@@ -4,7 +4,6 @@ Tests for IPECMD Wrapper Core
 Basic test suite for the IPECMD wrapper core functionality.
 """
 
-import os
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -29,7 +28,10 @@ class TestIPECMDPath:
     def test_get_ipecmd_path_with_version(self):
         """Test getting IPECMD path with version"""
         path = get_ipecmd_path(version="6.20")
-        expected_path = r"C:\Program Files\Microchip\MPLABX\v6.20\mplab_platform\mplab_ipe\ipecmd.exe"
+        expected_path = (
+            r"C:\Program Files\Microchip\MPLABX\v6.20\mplab_platform"
+            r"\mplab_ipe\ipecmd.exe"
+        )
         assert path == expected_path
 
     def test_get_ipecmd_path_with_custom_path(self):

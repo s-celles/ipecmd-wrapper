@@ -6,15 +6,14 @@ This module provides the main entry point for the IPECMD wrapper.
 """
 
 import argparse
-import sys
 from typing import List, Optional
 
 from colorama import Fore, Style, init
 
+from .core import TOOL_CHOICES, VERSION_CHOICES, program_pic
+
 # Initialize colorama for cross-platform support
 init(autoreset=True)
-
-from .core import TOOL_CHOICES, VERSION_CHOICES, program_pic
 
 # Version information
 __version__ = "0.1.0"
@@ -65,13 +64,15 @@ def create_argument_parser() -> argparse.ArgumentParser:
         "-M",
         "--memory",
         default="",
-        help="Program Device memory regions (P=Program, E=EEPROM, I=ID, C=Configuration, B=Boot, A=Auxiliary)",
+        help="Program Device memory regions "
+        "(P=Program, E=EEPROM, I=ID, C=Configuration, B=Boot, A=Auxiliary)",
     )
     parser.add_argument(
         "-Y",
         "--verify",
         default="",
-        help="Verify Device memory regions (P=Program, E=EEPROM, I=ID, C=Configuration, B=Boot, A=Auxiliary)",
+        help="Verify Device memory regions "
+        "(P=Program, E=EEPROM, I=ID, C=Configuration, B=Boot, A=Auxiliary)",
     )
     parser.add_argument(
         "-E",

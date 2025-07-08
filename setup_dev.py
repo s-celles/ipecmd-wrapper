@@ -22,12 +22,12 @@ class Colors:
     END = "\033[0m"
 
 
-def print_colored(text, color):
+def print_colored(text: str, color: str) -> None:
     """Print colored text"""
     print(f"{color}{text}{Colors.END}")
 
 
-def run_command(cmd, description, check=True):
+def run_command(cmd: str, description: str, check: bool = True) -> bool:
     """Run a command and print status"""
     print_colored(f"\n🔧 {description}...", Colors.CYAN)
     try:
@@ -48,7 +48,7 @@ def run_command(cmd, description, check=True):
         return False
 
 
-def check_python_version():
+def check_python_version() -> bool:
     """Check if Python version is compatible"""
     print_colored("\n🐍 Checking Python version...", Colors.BLUE)
     version = sys.version_info
@@ -62,7 +62,7 @@ def check_python_version():
     return True
 
 
-def check_git():
+def check_git() -> bool:
     """Check if git is available"""
     print_colored("\n📦 Checking git...", Colors.BLUE)
     try:
@@ -77,7 +77,7 @@ def check_git():
         return False
 
 
-def create_virtual_environment():
+def create_virtual_environment() -> bool:
     """Create virtual environment"""
     venv_path = Path(".venv")
 
@@ -98,7 +98,7 @@ def create_virtual_environment():
         return False
 
 
-def get_pip_command():
+def get_pip_command() -> str:
     """Get the pip command for the current platform"""
     if os.name == "nt":  # Windows
         return r".venv\Scripts\pip.exe"
@@ -106,7 +106,7 @@ def get_pip_command():
         return ".venv/bin/pip"
 
 
-def get_python_command():
+def get_python_command() -> str:
     """Get the python command for the current platform"""
     if os.name == "nt":  # Windows
         return r".venv\Scripts\python.exe"
@@ -114,13 +114,13 @@ def get_python_command():
         return ".venv/bin/python"
 
 
-def upgrade_pip():
+def upgrade_pip() -> bool:
     """Upgrade pip in virtual environment"""
     pip_cmd = get_pip_command()
     return run_command(f"{pip_cmd} install --upgrade pip", "Upgrading pip")
 
 
-def install_package_dev():
+def install_package_dev() -> bool:
     """Install package in development mode with dev dependencies"""
     pip_cmd = get_pip_command()
     return run_command(
@@ -128,7 +128,7 @@ def install_package_dev():
     )
 
 
-def install_pre_commit():
+def install_pre_commit() -> bool:
     """Install pre-commit hooks"""
     python_cmd = get_python_command()
     return run_command(
@@ -136,7 +136,7 @@ def install_pre_commit():
     )
 
 
-def run_initial_tests():
+def run_initial_tests() -> bool:
     """Run initial tests to verify setup"""
     python_cmd = get_python_command()
     print_colored("\n🧪 Running initial tests...", Colors.BLUE)
@@ -155,14 +155,15 @@ def run_initial_tests():
     return success
 
 
-def verify_installation():
+def verify_installation() -> bool:
     """Verify the installation by importing the package"""
     python_cmd = get_python_command()
     print_colored("\n🔍 Verifying installation...", Colors.BLUE)
 
     # Test importing the package
     success = run_command(
-        f"{python_cmd} -c \"import ipecmd_wrapper; print('✅ Package imported successfully')\"",
+        f'{python_cmd} -c "import ipecmd_wrapper; '
+        f"print('✅ Package imported successfully')\"",
         "Testing package import",
         check=False,
     )
@@ -175,7 +176,7 @@ def verify_installation():
     return success
 
 
-def show_next_steps():
+def show_next_steps() -> None:
     """Show next steps for development"""
     print_colored("\n🎉 Development environment setup complete!", Colors.GREEN)
     print_colored("\n📋 Next steps:", Colors.BOLD)
@@ -231,7 +232,7 @@ def show_next_steps():
     print("- make dev-test: Run full development test cycle")
 
 
-def main():
+def main() -> int:
     """Main setup function"""
     print_colored("🚀 Setting up IPECMD Wrapper development environment", Colors.BOLD)
 
@@ -240,7 +241,9 @@ def main():
         sys.exit(1)
 
     if not check_git():
-        print_colored("⚠️  Git is not available, but continuing setup...", Colors.YELLOW)
+        print_colored(
+            "⚠️  Git is not available, but continuing setup...", Colors.YELLOW
+        )
 
     # Setup steps
     steps = [
@@ -264,7 +267,8 @@ def main():
 
     if failed_steps:
         print_colored(
-            f"\n⚠️  Some steps failed: {', '.join(failed_steps)}", Colors.YELLOW
+            f"\n⚠️  Some steps failed: {', '.join(failed_steps)}",
+            Colors.YELLOW,
         )
         print_colored("You may need to run these steps manually.", Colors.YELLOW)
 

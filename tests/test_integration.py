@@ -4,20 +4,13 @@ Integration tests for IPECMD Wrapper
 Test the integration between different components of the IPECMD wrapper.
 """
 
-import os
 import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
 from ipecmd_wrapper.cli import main
-from ipecmd_wrapper.core import (
-    get_ipecmd_path,
-    program_pic,
-    validate_hex_file,
-    validate_ipecmd,
-)
 
 
 @pytest.mark.integration
@@ -198,7 +191,8 @@ class TestPackageIntegration:
         """Test that demo script can import and use the package"""
         # This would normally import and run the demo script
         # For now, we'll just test the imports it uses
-        from ipecmd_wrapper import TOOL_CHOICES, get_ipecmd_path
+        from ipecmd_wrapper import TOOL_CHOICES
+        from ipecmd_wrapper.core import get_ipecmd_path
 
         # Test that demo script dependencies are available
         assert callable(get_ipecmd_path)

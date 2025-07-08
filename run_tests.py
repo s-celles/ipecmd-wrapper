@@ -9,10 +9,12 @@ with various configurations.
 import argparse
 import subprocess
 import sys
-from pathlib import Path
+from typing import List
 
 
-def run_command(cmd, description="Running command", verbose=False):
+def run_command(
+    cmd: List[str], description: str = "Running command", verbose: bool = False
+) -> bool:
     """Run a command and return its result"""
     if verbose:
         print(f"🔧 {description}...")
@@ -36,7 +38,7 @@ def run_command(cmd, description="Running command", verbose=False):
         return False
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description="Test runner for IPECMD Wrapper")
     parser.add_argument(
         "--type",

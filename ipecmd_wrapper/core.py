@@ -7,7 +7,7 @@ This module contains the main functions for interacting with MPLAB IPE's IPECMD 
 import os
 import subprocess
 import sys
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from colorama import Fore, Style, init
 
@@ -88,7 +88,10 @@ def get_ipecmd_path(
     if custom_path:
         return custom_path
     elif version:
-        return f"C:\\Program Files\\Microchip\\MPLABX\\v{version}\\mplab_platform\\mplab_ipe\\ipecmd.exe"
+        return (
+            f"C:\\Program Files\\Microchip\\MPLABX\\v{version}\\"
+            f"mplab_platform\\mplab_ipe\\ipecmd.exe"
+        )
     else:
         raise ValueError("Either version or custom_path must be provided")
 
@@ -110,7 +113,8 @@ def validate_ipecmd(ipecmd_path: str, version_info: str) -> bool:
             print_colored("Check the provided --ipecmd-path", Colors.YELLOW)
         else:
             print_colored(
-                f"Install MPLAB X IDE {version_info} or use --ipecmd-path to specify custom location",
+                f"Install MPLAB X IDE {version_info} or use --ipecmd-path "
+                f"to specify custom location",
                 Colors.YELLOW,
             )
         return False
@@ -138,7 +142,7 @@ def validate_hex_file(hex_file_path: str) -> bool:
     return True
 
 
-def build_ipecmd_command(args, ipecmd_path: str) -> List[str]:
+def build_ipecmd_command(args: object, ipecmd_path: str) -> List[str]:
     """
     Build IPECMD command arguments
 
@@ -276,7 +280,7 @@ def execute_programming(
         return False
 
 
-def program_pic(args) -> None:
+def program_pic(args: object) -> None:
     """
     Main function to program PIC microcontroller
 
