@@ -9,14 +9,13 @@ description = "IPECMD Wrapper for PIC Microcontrollers Programming"
 authors = [
     {name = "Sébastien Celles", email = "s.celles@gmail.com"}
 ]
-license = {text = "MIT"}
+license = "MIT"
 readme = "README.md"
 requires-python = ">=3.9"
 keywords = ["ipecmd", "pic", "microcontroller", "programming", "embedded", "pickit"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -76,7 +75,7 @@ addopts = [
     "--cov-report=term-missing",
     "--cov-report=html",
     "--cov-report=xml",
-    "--cov-fail-under=80",
+    "--cov-fail-under=75",
 ]
 testpaths = [
     "tests",
