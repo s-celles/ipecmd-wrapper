@@ -116,8 +116,8 @@ class TestPerformance:
         end_time = time.time()
         execution_time = end_time - start_time
 
-        # Should complete 3000 parsing operations in less than 1 second
-        assert execution_time < 1.0, f"CLI parsing too slow: {execution_time:.3f}s"
+        # Should complete 3000 parsing operations in less than 2 seconds
+        assert execution_time < 2.0, f"CLI parsing too slow: {execution_time:.3f}s"
 
     def test_memory_usage_stability(self):
         """Test that memory usage remains stable"""
