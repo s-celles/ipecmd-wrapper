@@ -158,11 +158,13 @@ jobs:
         path: dist/
 
     - name: Install from wheel
+      shell: bash
       run: |
         python -m pip install --upgrade pip
         pip install dist/*.whl
 
     - name: Test installation
+      shell: bash
       run: |
         python -c "import ipecmd_wrapper; print('✅ Package imported successfully')"
         ipecmd-wrapper --help
