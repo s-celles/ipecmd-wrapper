@@ -4,9 +4,9 @@ Core functionality for IPECMD wrapper
 This module contains the main functions for interacting with MPLAB IPE's IPECMD tool.
 """
 
-import os
 import subprocess  # nosec B404
 import sys
+from pathlib import Path
 from typing import Any, List, Optional
 
 from colorama import Fore, Style, init
@@ -88,10 +88,21 @@ def get_ipecmd_path(
     if custom_path:
         return custom_path
     elif version:
-        return (
-            f"C:\\Program Files\\Microchip\\MPLABX\\v{version}\\"
-            f"mplab_platform\\mplab_ipe\\ipecmd.exe"
+        # Cross-platform path handling
+        if sys.platform == "win32":
+            base_path = Path("C:/Program Files/Microchip/MPLABX")
+            executable = "ipecmd.exe"
+        elif sys.platform == "darwin":  # macOS
+            base_path = Path("/Applications/microchip/mplabx")
+            executable = "ipecmd"
+        else:  # Linux and other Unix systems
+            base_path = Path("/opt/microchip/mplabx")
+            executable = "ipecmd"
+
+        ipecmd_path = (
+            base_path / f"v{version}" / "mplab_platform" / "mplab_ipe" / executable
         )
+        return str(ipecmd_path)
     else:
         raise ValueError("Either version or custom_path must be provided")
 
@@ -107,7 +118,8 @@ def validate_ipecmd(ipecmd_path: str, version_info: str) -> bool:
     Returns:
         bool: True if IPECMD is valid, False otherwise
     """
-    if not os.path.exists(ipecmd_path):
+    path = Path(ipecmd_path)
+    if not path.exists():
         print_colored(f"✗ IPECMD not found: {ipecmd_path}", Colors.RED)
         if "custom path" in version_info:
             print_colored("Check the provided --ipecmd-path", Colors.YELLOW)
@@ -133,7 +145,8 @@ def validate_hex_file(hex_file_path: str) -> bool:
     Returns:
         bool: True if HEX file exists, False otherwise
     """
-    if not os.path.exists(hex_file_path):
+    path = Path(hex_file_path)
+    if not path.exists():
         print_colored(f"✗ HEX file not found: {hex_file_path}", Colors.RED)
         print_colored("Compile first with: python compile.py", Colors.YELLOW)
         return False

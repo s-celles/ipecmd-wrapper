@@ -4,6 +4,8 @@ Tests for IPECMD Wrapper Core
 Basic test suite for the IPECMD wrapper core functionality.
 """
 
+import sys
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -28,15 +30,26 @@ class TestIPECMDPath:
     def test_get_ipecmd_path_with_version(self):
         """Test getting IPECMD path with version"""
         path = get_ipecmd_path(version="6.20")
-        expected_path = (
-            r"C:\Program Files\Microchip\MPLABX\v6.20\mplab_platform"
-            r"\mplab_ipe\ipecmd.exe"
+
+        # Cross-platform expected path
+        if sys.platform == "win32":
+            expected_base = Path("C:/Program Files/Microchip/MPLABX")
+            executable = "ipecmd.exe"
+        elif sys.platform == "darwin":  # macOS
+            expected_base = Path("/Applications/microchip/mplabx")
+            executable = "ipecmd"
+        else:  # Linux and other Unix systems
+            expected_base = Path("/opt/microchip/mplabx")
+            executable = "ipecmd"
+
+        expected_path = str(
+            expected_base / "v6.20" / "mplab_platform" / "mplab_ipe" / executable
         )
         assert path == expected_path
 
     def test_get_ipecmd_path_with_custom_path(self):
         """Test getting IPECMD path with custom path"""
-        custom_path = r"C:\custom\path\ipecmd.exe"
+        custom_path = "/custom/path/ipecmd"
         path = get_ipecmd_path(custom_path=custom_path)
         assert path == custom_path
 
@@ -53,28 +66,28 @@ class TestIPECMDPath:
 class TestValidation:
     """Test validation functions"""
 
-    @patch("os.path.exists")
+    @patch("pathlib.Path.exists")
     def test_validate_ipecmd_exists(self, mock_exists):
         """Test validation when IPECMD exists"""
         mock_exists.return_value = True
         result = validate_ipecmd("fake_path", "v6.20")
         assert result is True
 
-    @patch("os.path.exists")
+    @patch("pathlib.Path.exists")
     def test_validate_ipecmd_not_exists(self, mock_exists):
         """Test validation when IPECMD doesn't exist"""
         mock_exists.return_value = False
         result = validate_ipecmd("fake_path", "v6.20")
         assert result is False
 
-    @patch("os.path.exists")
+    @patch("pathlib.Path.exists")
     def test_validate_hex_file_exists(self, mock_exists):
         """Test validation when HEX file exists"""
         mock_exists.return_value = True
         result = validate_hex_file("fake_file.hex")
         assert result is True
 
-    @patch("os.path.exists")
+    @patch("pathlib.Path.exists")
     def test_validate_hex_file_not_exists(self, mock_exists):
         """Test validation when HEX file doesn't exist"""
         mock_exists.return_value = False

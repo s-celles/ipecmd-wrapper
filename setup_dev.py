@@ -5,7 +5,6 @@ Development setup script for IPECMD Wrapper
 This script sets up the development environment for the IPECMD wrapper project.
 """
 
-import os
 import subprocess  # nosec B404
 import sys
 from pathlib import Path
@@ -100,18 +99,20 @@ def create_virtual_environment() -> bool:
 
 def get_pip_command() -> str:
     """Get the pip command for the current platform"""
-    if os.name == "nt":  # Windows
-        return r".venv\Scripts\pip.exe"
+    venv_path = Path(".venv")
+    if sys.platform == "win32":
+        return str(venv_path / "Scripts" / "pip.exe")
     else:  # Unix/Linux/macOS
-        return ".venv/bin/pip"
+        return str(venv_path / "bin" / "pip")
 
 
 def get_python_command() -> str:
     """Get the python command for the current platform"""
-    if os.name == "nt":  # Windows
-        return r".venv\Scripts\python.exe"
+    venv_path = Path(".venv")
+    if sys.platform == "win32":
+        return str(venv_path / "Scripts" / "python.exe")
     else:  # Unix/Linux/macOS
-        return ".venv/bin/python"
+        return str(venv_path / "bin" / "python")
 
 
 def upgrade_pip() -> bool:
@@ -181,10 +182,11 @@ def show_next_steps() -> None:
     print_colored("\n🎉 Development environment setup complete!", Colors.GREEN)
     print_colored("\n📋 Next steps:", Colors.BOLD)
 
-    if os.name == "nt":  # Windows
-        activate_cmd = r".venv\Scripts\activate"
+    venv_path = Path(".venv")
+    if sys.platform == "win32":
+        activate_cmd = str(venv_path / "Scripts" / "activate")
     else:  # Unix/Linux/macOS
-        activate_cmd = "source .venv/bin/activate"
+        activate_cmd = f"source {venv_path / 'bin' / 'activate'}"
 
     print(
         f"""
