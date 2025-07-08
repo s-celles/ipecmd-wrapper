@@ -49,7 +49,7 @@ TOOL_CHOICES = [
 ]
 
 # Available version choices
-VERSION_CHOICES = ["5.50", "6.20"]
+VERSION_CHOICES = ["5.50", "6.00", "6.05", "6.10", "6.15", "6.20", "6.25"]
 
 # Map of tool names to IPECMD options
 TOOL_MAP = {
@@ -290,14 +290,36 @@ def execute_programming(
         else:
             print_colored("\n✗ Programming error", Colors.RED)
             print_colored("Check connections and power supply", Colors.YELLOW)
-            if ipecmd_version == "5.50":
-                print_colored(
-                    "You can also try with --ipecmd-version 6.20", Colors.CYAN
-                )
-            elif ipecmd_version == "6.20":
-                print_colored(
-                    "You can also try with --ipecmd-version 5.50", Colors.CYAN
-                )
+
+            # Suggest alternative versions based on current version
+            if ipecmd_version and ipecmd_version in VERSION_CHOICES:
+                current_index = VERSION_CHOICES.index(ipecmd_version)
+                suggestions = []
+
+                # Suggest the latest version if not already using it
+                if ipecmd_version != VERSION_CHOICES[-1]:
+                    suggestions.append(VERSION_CHOICES[-1])
+
+                # Suggest previous version if available and not already suggested
+                if (
+                    current_index > 0
+                    and VERSION_CHOICES[current_index - 1] not in suggestions
+                ):
+                    suggestions.append(VERSION_CHOICES[current_index - 1])
+
+                # Suggest next version if available and not already suggested
+                if (
+                    current_index < len(VERSION_CHOICES) - 1
+                    and VERSION_CHOICES[current_index + 1] not in suggestions
+                ):
+                    suggestions.append(VERSION_CHOICES[current_index + 1])
+
+                # Show suggestions
+                for suggestion in suggestions[:2]:  # Limit to 2 suggestions
+                    print_colored(
+                        f"You can also try with --ipecmd-version {suggestion}",
+                        Colors.CYAN,
+                    )
             return False
 
     except Exception as e:
