@@ -253,6 +253,40 @@ def detect_programmer(ipecmd_path: str, part: str, tool: str) -> bool:
         return False
 
 
+def _get_version_suggestions(current_version: str) -> List[str]:
+    """
+    Get alternative version suggestions for troubleshooting
+
+    Args:
+        current_version: Current MPLAB X IDE version being used
+
+    Returns:
+        List of suggested alternative versions (max 2)
+    """
+    if current_version not in VERSION_CHOICES:
+        return []
+
+    current_index = VERSION_CHOICES.index(current_version)
+    suggestions = []
+
+    # Suggest the latest version if not already using it
+    if current_version != VERSION_CHOICES[-1]:
+        suggestions.append(VERSION_CHOICES[-1])
+
+    # Suggest previous version if available and not already suggested
+    if current_index > 0 and VERSION_CHOICES[current_index - 1] not in suggestions:
+        suggestions.append(VERSION_CHOICES[current_index - 1])
+
+    # Suggest next version if available and not already suggested
+    if (
+        current_index < len(VERSION_CHOICES) - 1
+        and VERSION_CHOICES[current_index + 1] not in suggestions
+    ):
+        suggestions.append(VERSION_CHOICES[current_index + 1])
+
+    return suggestions[:2]  # Limit to 2 suggestions
+
+
 def execute_programming(
     cmd_args: List[str], part: str, tool: str, ipecmd_version: Optional[str]
 ) -> bool:
@@ -292,30 +326,9 @@ def execute_programming(
             print_colored("Check connections and power supply", Colors.YELLOW)
 
             # Suggest alternative versions based on current version
-            if ipecmd_version and ipecmd_version in VERSION_CHOICES:
-                current_index = VERSION_CHOICES.index(ipecmd_version)
-                suggestions = []
-
-                # Suggest the latest version if not already using it
-                if ipecmd_version != VERSION_CHOICES[-1]:
-                    suggestions.append(VERSION_CHOICES[-1])
-
-                # Suggest previous version if available and not already suggested
-                if (
-                    current_index > 0
-                    and VERSION_CHOICES[current_index - 1] not in suggestions
-                ):
-                    suggestions.append(VERSION_CHOICES[current_index - 1])
-
-                # Suggest next version if available and not already suggested
-                if (
-                    current_index < len(VERSION_CHOICES) - 1
-                    and VERSION_CHOICES[current_index + 1] not in suggestions
-                ):
-                    suggestions.append(VERSION_CHOICES[current_index + 1])
-
-                # Show suggestions
-                for suggestion in suggestions[:2]:  # Limit to 2 suggestions
+            if ipecmd_version:
+                suggestions = _get_version_suggestions(ipecmd_version)
+                for suggestion in suggestions:
                     print_colored(
                         f"You can also try with --ipecmd-version {suggestion}",
                         Colors.CYAN,
