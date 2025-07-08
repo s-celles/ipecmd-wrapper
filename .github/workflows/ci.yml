@@ -166,5 +166,5 @@ jobs:
     - name: Test installation
       shell: bash
       run: |
-        python -c "import ipecmd_wrapper; print('✅ Package imported successfully')"
+        python -c "import ipecmd_wrapper; print('Package imported successfully')"
         ipecmd-wrapper --help
