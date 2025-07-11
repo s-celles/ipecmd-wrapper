@@ -9,27 +9,7 @@ import sys
 from pathlib import Path
 from typing import Any, List, Optional
 
-from colorama import Fore, Style, init
-
-# Initialize colorama for cross-platform support
-init(autoreset=True)
-
-
-def print_colored(text: str, color: str) -> None:
-    """Print text with specified color using colorama"""
-    print(f"{color}{text}{Style.RESET_ALL}")
-
-
-# Color constants
-class Colors:
-    RED = Fore.RED
-    GREEN = Fore.GREEN
-    YELLOW = Fore.YELLOW
-    BLUE = Fore.BLUE
-    CYAN = Fore.CYAN
-    WHITE = Fore.WHITE
-    GRAY = Fore.LIGHTBLACK_EX
-
+from .logger import log
 
 # Available tool choices
 TOOL_CHOICES = [
@@ -132,18 +112,17 @@ def validate_ipecmd(ipecmd_path: str, version_info: str) -> bool:
     """
     path = Path(ipecmd_path)
     if not path.exists():
-        print_colored(f"✗ IPECMD not found: {ipecmd_path}", Colors.RED)
+        log.error(f"IPECMD not found: {ipecmd_path}")
         if "custom path" in version_info:
-            print_colored("Check the provided --ipecmd-path", Colors.YELLOW)
+            log.warning("Check the provided --ipecmd-path")
         else:
-            print_colored(
+            log.warning(
                 f"Install MPLAB X IDE {version_info} or use --ipecmd-path "
-                f"to specify custom location",
-                Colors.YELLOW,
+                f"to specify custom location"
             )
         return False
 
-    print_colored("✓ IPECMD found", Colors.GREEN)
+    log.info("IPECMD found")
     return True
 
 
@@ -159,11 +138,11 @@ def validate_hex_file(hex_file_path: str) -> bool:
     """
     path = Path(hex_file_path)
     if not path.exists():
-        print_colored(f"✗ HEX file not found: {hex_file_path}", Colors.RED)
-        print_colored("Compile first with: python compile.py", Colors.YELLOW)
+        log.error(f"HEX file not found: {hex_file_path}")
+        log.warning("Compile first with: python compile.py")
         return False
 
-    print_colored(f"✓ HEX file found: {hex_file_path}", Colors.GREEN)
+    log.info(f"HEX file found: {hex_file_path}")
     return True
 
 
@@ -233,23 +212,22 @@ def detect_programmer(ipecmd_path: str, part: str, tool: str) -> bool:
     Returns:
         bool: True if programmer detection successful, False otherwise
     """
-    print_colored("\nTesting programmer detection...", Colors.YELLOW)
+    log.warning("Testing programmer detection...")
     tool_option = TOOL_MAP[tool]
     test_cmd = [ipecmd_path, f"-{tool_option}", f"-P{part}", "-OK"]
-    print_colored(f'Command: "{ipecmd_path}" -{tool_option} -P{part} -OK', Colors.CYAN)
+    log.info(f'Command: "{ipecmd_path}" -{tool_option} -P{part} -OK')
 
     try:
         result = subprocess.run(test_cmd, capture_output=True, text=True)  # nosec B603
         if result.returncode != 0:
-            print_colored("\n✗ Programmer detection failed!", Colors.RED)
-            print_colored("Check programmer connection and try again", Colors.YELLOW)
-            print_colored("STDERR:", Colors.RED)
-            print(result.stderr)
+            log.error("Programmer detection failed!")
+            log.warning("Check programmer connection and try again")
+            log.error("STDERR: %s" % result.stderr)
             return False
-        print_colored("✓ Programmer detection successful", Colors.GREEN)
+        log.info("Programmer detection successful")
         return True
     except Exception as e:
-        print_colored(f"\n✗ Error running programmer detection: {e}", Colors.RED)
+        log.error(f"Error running programmer detection: {e}")
         return False
 
 
@@ -302,9 +280,9 @@ def execute_programming(
     Returns:
         bool: True if programming successful, False otherwise
     """
-    print_colored("\nAttempting to program...", Colors.YELLOW)
+    log.warning("Attempting to program...")
     cmd_str = f'"{cmd_args[0]}" ' + " ".join(cmd_args[1:])
-    print_colored(f"Command: {cmd_str}", Colors.CYAN)
+    log.info(f"Command: {cmd_str}")
 
     try:
         result = subprocess.run(cmd_args, capture_output=True, text=True)  # nosec B603
@@ -316,27 +294,22 @@ def execute_programming(
             print(result.stderr)
 
         if result.returncode == 0:
-            print_colored(f"\n🎉 SUCCESS! PIC {part} programmed!", Colors.GREEN)
-            print_colored(
-                "Your program should now be running on this PIC", Colors.WHITE
-            )
+            log.info(f"SUCCESS! PIC {part} programmed!")
+            log.info("Your program should now be running on this PIC")
             return True
         else:
-            print_colored("\n✗ Programming error", Colors.RED)
-            print_colored("Check connections and power supply", Colors.YELLOW)
+            log.error("Programming error")
+            log.warning("Check connections and power supply")
 
             # Suggest alternative versions based on current version
             if ipecmd_version:
                 suggestions = _get_version_suggestions(ipecmd_version)
                 for suggestion in suggestions:
-                    print_colored(
-                        f"You can also try with --ipecmd-version {suggestion}",
-                        Colors.CYAN,
-                    )
+                    log.info(f"You can also try with --ipecmd-version {suggestion}")
             return False
 
     except Exception as e:
-        print_colored(f"\n✗ Error running programming command: {e}", Colors.RED)
+        log.error(f"Error running programming command: {e}")
         return False
 
 
@@ -368,14 +341,11 @@ def program_pic(args: Any) -> None:
         sys.exit(1)
 
     # Display configuration
-    print_colored("\nProgramming in progress...", Colors.YELLOW)
-    print_colored("Make sure that:", Colors.BLUE)
-    print_colored(f"  - {args.tool} is connected via USB", Colors.GRAY)
-    print_colored(f"  - PIC {args.part} is in the socket", Colors.GRAY)
-    print_colored(
-        f"  - Circuit will be powered by {args.tool} (voltage: {args.power}V)",
-        Colors.GRAY,
-    )
+    log.warning("Programming in progress...")
+    log.info("Make sure that:")
+    log.info(f"  - {args.tool} is connected via USB")
+    log.info(f"  - PIC {args.part} is in the socket")
+    log.info(f"  - Circuit will be powered by {args.tool} (voltage: {args.power}V)")
 
     # Test programmer detection if requested
     if args.test_programmer:

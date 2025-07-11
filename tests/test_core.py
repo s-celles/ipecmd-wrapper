@@ -13,13 +13,11 @@ from ipecmd_wrapper.core import (
     TOOL_CHOICES,
     TOOL_MAP,
     VERSION_CHOICES,
-    Colors,
     _get_version_suggestions,
     build_ipecmd_command,
     detect_programmer,
     execute_programming,
     get_ipecmd_path,
-    print_colored,
     program_pic,
     validate_hex_file,
     validate_ipecmd,
@@ -95,24 +93,24 @@ class TestValidation:
         assert result is True
 
     @patch("pathlib.Path.exists")
-    @patch("ipecmd_wrapper.core.print_colored")
-    def test_validate_ipecmd_not_exists(self, mock_print, mock_exists):
+    @patch("ipecmd_wrapper.core.log")
+    def test_validate_ipecmd_not_exists(self, mock_log, mock_exists):
         """Test validation when IPECMD doesn't exist"""
         mock_exists.return_value = False
         result = validate_ipecmd("fake_path", "v6.20")
         assert result is False
-        # Check that error messages were printed
-        assert mock_print.call_count >= 2
+        # Check that error messages were logged
+        assert mock_log.error.call_count >= 1
 
     @patch("pathlib.Path.exists")
-    @patch("ipecmd_wrapper.core.print_colored")
-    def test_validate_ipecmd_not_exists_custom_path(self, mock_print, mock_exists):
+    @patch("ipecmd_wrapper.core.log")
+    def test_validate_ipecmd_not_exists_custom_path(self, mock_log, mock_exists):
         """Test validation when IPECMD doesn't exist with custom path"""
         mock_exists.return_value = False
         result = validate_ipecmd("fake_path", "custom path")
         assert result is False
-        # Check that custom path error message was printed
-        mock_print.assert_any_call("Check the provided --ipecmd-path", Colors.YELLOW)
+        # Check that custom path error message was logged
+        mock_log.warning.assert_any_call("Check the provided --ipecmd-path")
 
     @patch("pathlib.Path.exists")
     def test_validate_hex_file_exists(self, mock_exists):
@@ -232,8 +230,8 @@ class TestProgrammerDetection:
         assert result is True
 
     @patch("subprocess.run")
-    @patch("ipecmd_wrapper.core.print_colored")
-    def test_programmer_detection_failure(self, mock_print, mock_run):
+    @patch("ipecmd_wrapper.core.log")
+    def test_programmer_detection_failure(self, mock_log, mock_run):
         """Test failed programmer detection"""
         mock_result = MagicMock()
         mock_result.returncode = 1
@@ -242,11 +240,9 @@ class TestProgrammerDetection:
 
         result = detect_programmer("ipecmd.exe", "PIC16F876A", "PK3")
         assert result is False
-        # Verify error messages were printed
-        mock_print.assert_any_call("\n✗ Programmer detection failed!", Colors.RED)
-        mock_print.assert_any_call(
-            "Check programmer connection and try again", Colors.YELLOW
-        )
+        # Verify error messages were logged
+        mock_log.error.assert_any_call("Programmer detection failed!")
+        mock_log.warning.assert_any_call("Check programmer connection and try again")
 
     @patch("subprocess.run")
     def test_programmer_detection_exception(self, mock_run):
@@ -303,8 +299,8 @@ class TestExecuteProgramming:
     """Test programming execution functionality"""
 
     @patch("subprocess.run")
-    @patch("ipecmd_wrapper.core.print_colored")
-    def test_execute_programming_success(self, mock_print, mock_run):
+    @patch("ipecmd_wrapper.core.log")
+    def test_execute_programming_success(self, mock_log, mock_run):
         """Test successful programming execution"""
         mock_result = MagicMock()
         mock_result.returncode = 0
@@ -316,15 +312,13 @@ class TestExecuteProgramming:
         result = execute_programming(cmd_args, "PIC16F876A", "PK3", "6.20")
 
         assert result is True
-        mock_print.assert_any_call(
-            "\n🎉 SUCCESS! PIC PIC16F876A programmed!", Colors.GREEN
-        )
+        mock_log.info.assert_any_call("SUCCESS! PIC PIC16F876A programmed!")
 
     @patch("subprocess.run")
-    @patch("ipecmd_wrapper.core.print_colored")
+    @patch("ipecmd_wrapper.core.log")
     @patch("ipecmd_wrapper.core._get_version_suggestions")
     def test_execute_programming_failure_with_suggestions(
-        self, mock_suggestions, mock_print, mock_run
+        self, mock_suggestions, mock_log, mock_run
     ):
         """Test failed programming execution with version suggestions"""
         mock_result = MagicMock()
@@ -339,17 +333,13 @@ class TestExecuteProgramming:
         result = execute_programming(cmd_args, "PIC16F876A", "PK3", "6.20")
 
         assert result is False
-        mock_print.assert_any_call("\n✗ Programming error", Colors.RED)
-        mock_print.assert_any_call(
-            "You can also try with --ipecmd-version 6.25", Colors.CYAN
-        )
-        mock_print.assert_any_call(
-            "You can also try with --ipecmd-version 6.15", Colors.CYAN
-        )
+        mock_log.error.assert_any_call("Programming error")
+        mock_log.info.assert_any_call("You can also try with --ipecmd-version 6.25")
+        mock_log.info.assert_any_call("You can also try with --ipecmd-version 6.15")
 
     @patch("subprocess.run")
-    @patch("ipecmd_wrapper.core.print_colored")
-    def test_execute_programming_failure_no_version(self, mock_print, mock_run):
+    @patch("ipecmd_wrapper.core.log")
+    def test_execute_programming_failure_no_version(self, mock_log, mock_run):
         """Test failed programming execution without version info"""
         mock_result = MagicMock()
         mock_result.returncode = 1
@@ -361,11 +351,11 @@ class TestExecuteProgramming:
         result = execute_programming(cmd_args, "PIC16F876A", "PK3", None)
 
         assert result is False
-        mock_print.assert_any_call("\n✗ Programming error", Colors.RED)
+        mock_log.error.assert_any_call("Programming error")
 
     @patch("subprocess.run")
-    @patch("ipecmd_wrapper.core.print_colored")
-    def test_execute_programming_exception(self, mock_print, mock_run):
+    @patch("ipecmd_wrapper.core.log")
+    def test_execute_programming_exception(self, mock_log, mock_run):
         """Test programming execution with exception"""
         mock_run.side_effect = Exception("Command failed")
 
@@ -373,8 +363,8 @@ class TestExecuteProgramming:
         result = execute_programming(cmd_args, "PIC16F876A", "PK3", "6.20")
 
         assert result is False
-        mock_print.assert_any_call(
-            "\n✗ Error running programming command: Command failed", Colors.RED
+        mock_log.error.assert_any_call(
+            "Error running programming command: Command failed"
         )
 
 
@@ -634,14 +624,14 @@ class TestProgramPic:
 
 @pytest.mark.unit
 @pytest.mark.core
+@pytest.mark.unit
+@pytest.mark.core
 class TestUtilities:
     """Test utility functions"""
 
-    @patch("builtins.print")
-    def test_print_colored(self, mock_print):
-        """Test print_colored function"""
-        print_colored("Test message", Colors.RED)
-        mock_print.assert_called_once()
+    def test_placeholder(self):
+        """Placeholder test to keep the class structure"""
+        assert True
 
 
 if __name__ == "__main__":

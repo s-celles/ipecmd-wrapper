@@ -9,25 +9,11 @@ import argparse
 import sys
 from typing import List, Optional
 
-from colorama import Fore, Style, init
-
 from .core import TOOL_CHOICES, VERSION_CHOICES, program_pic
-
-# Initialize colorama for cross-platform support
-init(autoreset=True)
+from .logger import log
 
 # Version information
 __version__ = "0.1.0"
-
-
-def print_colored(text: str, color: str) -> None:
-    """Print text with specified color using colorama"""
-    print(f"{color}{text}{Style.RESET_ALL}")
-
-
-# Color constants
-class Colors:
-    CYAN = Fore.CYAN
 
 
 def create_argument_parser() -> argparse.ArgumentParser:
@@ -115,7 +101,7 @@ def main(argv: Optional[List[str]] = None) -> None:
     Args:
         argv: Command line arguments (defaults to sys.argv)
     """
-    print_colored("=== IPECMD WRAPPER ===", Colors.CYAN)
+    log.info("=== IPECMD WRAPPER ===")
 
     parser = create_argument_parser()
     args = parser.parse_args(argv)
@@ -128,7 +114,7 @@ def main(argv: Optional[List[str]] = None) -> None:
     try:
         program_pic(args)
     except (ValueError, FileNotFoundError, Exception) as e:
-        print_colored(f"Error: {e}", Colors.CYAN)
+        log.error(f"Error: {e}")
         sys.exit(1)
 
 

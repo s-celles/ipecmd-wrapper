@@ -27,6 +27,7 @@ classifiers = [
 ]
 dependencies = [
     "colorama>=0.4.4",
+    "logbook>=1.5.3",
 ]
 
 [project.optional-dependencies]
