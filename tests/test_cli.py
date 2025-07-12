@@ -135,7 +135,7 @@ class TestTyperCLI:
         """Test that program_pic is called with correct arguments"""
         mock_program_pic.return_value = None
 
-        result = self.runner.invoke(
+        self.runner.invoke(
             app,
             [
                 "--tool",
@@ -170,14 +170,14 @@ class TestTyperCLI:
         assert args.ipecmd_version == "6.20"  # String value from enum
         assert args.memory == "P"
         assert args.verify == "P"
-        assert args.erase == True
+        assert args.erase
 
     @patch("ipecmd_wrapper.cli.program_pic")
     def test_test_programmer_mode(self, mock_program_pic):
         """Test test programmer mode"""
         mock_program_pic.return_value = None
 
-        result = self.runner.invoke(
+        self.runner.invoke(
             app,
             [
                 "--tool",
@@ -196,7 +196,7 @@ class TestTyperCLI:
 
         mock_program_pic.assert_called_once()
         args = mock_program_pic.call_args[0][0]  # Get first positional argument
-        assert args.test_programmer == True
+        assert args.test_programmer
 
 
 @pytest.mark.unit

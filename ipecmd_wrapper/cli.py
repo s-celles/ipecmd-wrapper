@@ -7,7 +7,7 @@ This module provides the main entry point for the IPECMD wrapper.
 
 from enum import Enum
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated, Optional, Union
 
 import typer
 
@@ -66,7 +66,7 @@ def version_callback(value: bool) -> None:
 
 # Simple namespace class to mimic argparse.Namespace for compatibility
 class Args:
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Union[str, bool, None]) -> None:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -96,7 +96,8 @@ def main(
         typer.Option(
             "--memory",
             "-M",
-            help="Program Device memory regions (P=Program, E=EEPROM, I=ID, C=Configuration, B=Boot, A=Auxiliary)",
+            help="Program Device memory regions (P=Program, E=EEPROM, I=ID, "
+            "C=Configuration, B=Boot, A=Auxiliary)",
         ),
     ] = "",
     verify: Annotated[
@@ -104,7 +105,8 @@ def main(
         typer.Option(
             "--verify",
             "-Y",
-            help="Verify Device memory regions (P=Program, E=EEPROM, I=ID, C=Configuration, B=Boot, A=Auxiliary)",
+            help="Verify Device memory regions (P=Program, E=EEPROM, I=ID, "
+            "C=Configuration, B=Boot, A=Auxiliary)",
         ),
     ] = "",
     erase: Annotated[
@@ -182,9 +184,12 @@ def main(
     # Call the main programming function with error handling
     try:
         program_pic(args)
-    except (ValueError, FileNotFoundError, Exception) as e:
+    except (ValueError, FileNotFoundError) as e:
         log.error(f"Error: {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
+    except Exception as e:
+        log.error(f"Unexpected error: {e}")
+        raise typer.Exit(1) from None
 
 
 def cli_main() -> None:

@@ -44,7 +44,7 @@ class TestIntegration:
             mock_program.return_value = True
 
             # Test CLI to core integration
-            result = runner.invoke(
+            runner.invoke(
                 app,
                 [
                     "--part",
@@ -97,7 +97,7 @@ class TestIntegration:
                 mock_program.return_value = True
 
                 # Test complete workflow
-                result = runner.invoke(
+                runner.invoke(
                     app,
                     [
                         "--part",
@@ -179,7 +179,7 @@ class TestIntegration:
             mock_program.return_value = True
 
             # Test custom path configuration
-            result = runner.invoke(
+            runner.invoke(
                 app,
                 [
                     "--part",

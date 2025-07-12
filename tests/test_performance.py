@@ -120,19 +120,22 @@ class TestPerformance:
 
         start_time = time.time()
 
-        # Test CLI invocation multiple times (fewer iterations since it's more expensive than parsing)
+        # Test CLI invocation multiple times
+        # (fewer iterations since it's more expensive than parsing)
         with patch("ipecmd_wrapper.cli.program_pic") as mock_program_pic:
             mock_program_pic.return_value = None
 
             for _ in range(100):  # Reduced from 1000 due to Typer overhead
                 for args in args_list:
-                    result = runner.invoke(app, args)
-                    # Don't assert success here as we're testing performance, not correctness
+                    runner.invoke(app, args)
+                    # Don't assert success here as we're testing
+                    # performance, not correctness
 
         end_time = time.time()
         execution_time = end_time - start_time
 
-        # Should complete 300 CLI invocations in less than 10 seconds (more lenient for Typer)
+        # Should complete 300 CLI invocations in less than 10 seconds
+        # (more lenient for Typer)
         assert execution_time < 10.0, f"CLI parsing too slow: {execution_time:.3f}s"
 
         # Clean up

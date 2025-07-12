@@ -259,7 +259,8 @@ class TestIntegrationCompatibility:
             with patch("ipecmd_wrapper.cli.program_pic") as mock_program_pic:
                 mock_program_pic.return_value = None
                 result = runner.invoke(app, cmd)
-                # Test should not crash due to encoding issues (check both stdout and output)
+                # Test should not crash due to encoding issues
+                # (check both stdout and output)
                 assert result.exit_code == 0 or "Error:" in result.output
 
         # Clean up
