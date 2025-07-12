@@ -71,10 +71,12 @@ class TestTyperCLI:
             result = self.runner.invoke(
                 app,
                 [
-                    "PIC16F877A",    # part (positional)
-                    tool.value,      # tool (positional)
-                    "--file", self.test_hex_file,
-                    "--power", "5.0",
+                    "PIC16F877A",  # part (positional)
+                    tool.value,  # tool (positional)
+                    "--file",
+                    self.test_hex_file,
+                    "--power",
+                    "5.0",
                     "--test-programmer",
                 ],
             )
@@ -86,10 +88,12 @@ class TestTyperCLI:
         result = self.runner.invoke(
             app,
             [
-                "PIC16F877A",    # part (positional)
-                "INVALID",       # tool (invalid, positional)
-                "--file", self.test_hex_file,
-                "--power", "5.0",
+                "PIC16F877A",  # part (positional)
+                "INVALID",  # tool (invalid, positional)
+                "--file",
+                self.test_hex_file,
+                "--power",
+                "5.0",
             ],
         )
         assert result.exit_code != 0
@@ -106,11 +110,14 @@ class TestTyperCLI:
             result = self.runner.invoke(
                 app,
                 [
-                    "PIC16F877A",    # part (positional)
-                    "PK4",           # tool (positional)
-                    "--file", self.test_hex_file,
-                    "--power", "5.0",
-                    "--ipecmd-version", version.value,
+                    "PIC16F877A",  # part (positional)
+                    "PK4",  # tool (positional)
+                    "--file",
+                    self.test_hex_file,
+                    "--power",
+                    "5.0",
+                    "--ipecmd-version",
+                    version.value,
                     "--test-programmer",
                 ],
             )
@@ -122,10 +129,12 @@ class TestTyperCLI:
         result = self.runner.invoke(
             app,
             [
-                "PIC16F877A",    # part (positional)
-                "PK4",           # tool (positional)
-                "--file", "nonexistent.hex",
-                "--power", "5.0",
+                "PIC16F877A",  # part (positional)
+                "PK4",  # tool (positional)
+                "--file",
+                "nonexistent.hex",
+                "--power",
+                "5.0",
             ],
         )
         assert result.exit_code != 0
@@ -144,13 +153,18 @@ class TestTyperCLI:
         self.runner.invoke(
             app,
             [
-                "PIC16F877A",    # part (positional)
-                "PK4",           # tool (positional)
-                "--file", self.test_hex_file,
-                "--power", "5.0",
-                "--ipecmd-version", "6.20",
-                "--memory", "P",
-                "--verify", "P",
+                "PIC16F877A",  # part (positional)
+                "PK4",  # tool (positional)
+                "--file",
+                self.test_hex_file,
+                "--power",
+                "5.0",
+                "--ipecmd-version",
+                "6.20",
+                "--memory",
+                "P",
+                "--verify",
+                "P",
                 "--erase",
             ],
         )
@@ -179,11 +193,14 @@ class TestTyperCLI:
         self.runner.invoke(
             app,
             [
-                "PIC16F877A",    # part (positional)
-                "PK4",           # tool (positional)
-                "--file", self.test_hex_file,
-                "--power", "5.0",
-                "--ipecmd-version", "6.20",  # Required parameter
+                "PIC16F877A",  # part (positional)
+                "PK4",  # tool (positional)
+                "--file",
+                self.test_hex_file,
+                "--power",
+                "5.0",
+                "--ipecmd-version",
+                "6.20",  # Required parameter
                 "--test-programmer",
             ],
         )
