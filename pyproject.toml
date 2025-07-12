@@ -43,6 +43,7 @@ dev = [
     "bandit>=1.7",
     "safety>=2.0",
     "commitizen>=3.0",
+    "typer>=0.9.0",  # Required for CLI tests
     # Ensure we have proper packaging tools for all platforms
     "setuptools>=45",
     "wheel>=0.37",
