@@ -40,8 +40,8 @@ help:
 	@echo "  test-compatibility Run compatibility tests only"
 	@echo ""
 	@echo "Code Quality:"
-	@echo "  lint              Run linting (flake8)"
-	@echo "  format            Format code (black + isort)"
+	@echo "  lint              Run linting (ruff)"
+	@echo "  format            Format code (ruff)"
 	@echo "  type-check        Run type checking (mypy)"
 	@echo "  security          Run security scanning (bandit)"
 	@echo "  pre-commit        Run pre-commit hooks"
@@ -103,12 +103,11 @@ test-compatibility:
 # Code quality commands
 lint:
 	@echo "Running linting..."
-	flake8 $(SRC_DIR) $(TEST_DIR)
+	ruff check $(SRC_DIR) $(TEST_DIR)
 
 format:
 	@echo "Formatting code..."
-	black $(SRC_DIR) $(TEST_DIR)
-	isort $(SRC_DIR) $(TEST_DIR)
+	ruff format $(SRC_DIR) $(TEST_DIR)
 
 type-check:
 	@echo "Running type checking..."

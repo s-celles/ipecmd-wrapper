@@ -53,12 +53,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .[dev]
 
-    - name: Lint with flake8
+    - name: Lint and format with ruff
       run: |
-        # Stop the build if there are Python syntax errors or undefined names
-        flake8 ipecmd_wrapper --count --select=E9,F63,F7,F82 --show-source --statistics
-        # Exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 ipecmd_wrapper --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+        # Check for linting errors
+        ruff check ipecmd_wrapper
+        # Check formatting
+        ruff format --check ipecmd_wrapper
 
     - name: Type checking with mypy
       run: |

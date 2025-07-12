@@ -199,23 +199,20 @@ def show_next_steps() -> None:
 3. Run tests with coverage:
    python -m pytest tests/ --cov=ipecmd_wrapper --cov-report=html
 
-4. Format code:
-   black .
-   isort .
+4. Format and lint code:
+   ruff check --fix .
+   ruff format .
 
-5. Run linting:
-   flake8 .
-
-6. Run type checking:
+5. Run type checking:
    mypy .
 
-7. Run all pre-commit hooks:
+6. Run all pre-commit hooks:
    pre-commit run --all-files
 
-8. Build package:
+7. Build package:
    python -m build
 
-9. Start developing:
+8. Start developing:
    - Edit code in ipecmd_wrapper/
    - Add tests in tests/
    - Update documentation as needed

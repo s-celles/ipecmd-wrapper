@@ -35,8 +35,7 @@ This project uses several open-source libraries and tools:
 ### Development Dependencies
 
 - **pytest**: MIT License
-- **black**: MIT License
-- **flake8**: MIT License
+- **ruff**: MIT License (replaces black, isort, flake8)
 - **mypy**: MIT License
 - **pre-commit**: MIT License
 - **coverage**: Apache License 2.0

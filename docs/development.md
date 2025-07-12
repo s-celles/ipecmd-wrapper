@@ -107,11 +107,9 @@ pytest tests/test_core.py
 # Format code
 black .
 
-# Sort imports
-isort .
-
-# Lint code
-flake8 .
+# Format and lint code (replaces black, isort, flake8)
+ruff check --fix .
+ruff format .
 
 # Type checking
 mypy .
