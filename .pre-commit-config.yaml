@@ -56,7 +56,13 @@ repos:
       - id: pytest
         name: pytest
         entry: python -m pytest
-        language: system
+        language: python
+        additional_dependencies: [
+          pytest>=7.0,
+          pytest-cov>=4.0,
+          colorama>=0.4.4,
+          logbook>=1.5.3
+        ]
         types: [python]
         pass_filenames: false
         always_run: true
