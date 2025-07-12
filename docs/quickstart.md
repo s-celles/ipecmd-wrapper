@@ -20,13 +20,13 @@ pip install ipecmd-wrapper
 ### 2️⃣ Program a PIC Microcontroller
 
 ```bash
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
+ipecmd-wrapper PIC16F876A PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
 ```
 
 ### 3️⃣ Verify Programming
 
 ```bash
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --verify P --ipecmd-version 6.20
+ipecmd-wrapper PIC16F876A PK3 --file firmware.hex --power 5.0 --verify P --ipecmd-version 6.20
 ```
 
 ## 🎨 Modern CLI Features
@@ -47,10 +47,13 @@ ipecmd-wrapper --help
 
 ## Command Line Options
 
+### Required Arguments
+
+- `PART`: Target device (e.g., PIC16F876A) - **positional argument**
+- `TOOL`: Programmer type (PK3, PK4, ICD3, etc.) - **positional argument with validated choices**
+
 ### Required Options
 
-- `--part` / `-P`: Target device (e.g., PIC16F876A)
-- `--tool` / `-T`: Programmer type (PK3, PK4, ICD3, etc.) - **validated choices**
 - `--file` / `-F`: Hex file to program - **automatically validates file exists**
 - `--power` / `-W`: Target power voltage (e.g., 5.0, 3.3)
 
@@ -70,20 +73,20 @@ ipecmd-wrapper --help
 ### Valid Commands
 ```bash
 # ✅ Valid tool choice
-ipecmd-wrapper --part PIC16F876A --tool PK4 --file firmware.hex --power 5.0
+ipecmd-wrapper PIC16F876A PK4 --file firmware.hex --power 5.0
 
 # ✅ Valid version choice
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
+ipecmd-wrapper PIC16F876A PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
 ```
 
 ### Invalid Commands (with helpful errors)
 ```bash
 # ❌ Invalid tool choice
-ipecmd-wrapper --part PIC16F876A --tool INVALID --file firmware.hex --power 5.0
-# Error: Invalid value for '--tool' / '-T': 'INVALID' is not one of 'PK3', 'PK4', 'PK5', ...
+ipecmd-wrapper PIC16F876A INVALID --file firmware.hex --power 5.0
+# Error: Invalid value for 'TOOL': 'INVALID' is not one of 'PK3', 'PK4', 'PK5', ...
 
 # ❌ Missing file
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file missing.hex --power 5.0
+ipecmd-wrapper PIC16F876A PK3 --file missing.hex --power 5.0
 # Error: Invalid value for '--file' / '-F': Path 'missing.hex' does not exist.
 ```
 
@@ -128,19 +131,19 @@ program_pic(
 ### Program and Verify
 
 ```bash
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --erase --verify P
+ipecmd-wrapper PIC16F876A PK3 --file firmware.hex --power 5.0 --erase --verify P
 ```
 
 ### Test Programmer Connection
 
 ```bash
-ipecmd-wrapper --part PIC16F876A --tool PK3 --power 5.0 --test-programmer
+ipecmd-wrapper PIC16F876A PK3 --power 5.0 --test-programmer
 ```
 
 ### Use Custom IPECMD Path
 
 ```bash
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ipecmd-path "C:\custom\path\ipecmd.exe"
+ipecmd-wrapper PIC16F876A PK3 --file firmware.hex --power 5.0 --ipecmd-path "C:\custom\path\ipecmd.exe"
 ```
 
 ## Troubleshooting

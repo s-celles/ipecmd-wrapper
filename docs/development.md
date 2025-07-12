@@ -66,10 +66,10 @@ After installation, you can use the wrapper as:
 
 ```bash
 # Command-line tool
-ipecmd-wrapper --device PIC16F876A --programmer pickit3 --hex-file firmware.hex
+ipecmd-wrapper PIC16F876A PK3 --file firmware.hex --power 5.0
 
 # Python module
-python -m ipecmd_wrapper.cli --device PIC16F876A --programmer pickit3 --hex-file firmware.hex
+python -m ipecmd_wrapper.cli PIC16F876A PK3 --file firmware.hex --power 5.0
 
 # Python API
 from ipecmd_wrapper import get_ipecmd_path, upload_firmware

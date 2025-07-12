@@ -5,31 +5,33 @@ Complete reference for the IPECMD Wrapper command-line interface.
 ## Synopsis
 
 ```bash
-ipecmd-wrapper [OPTIONS]
+ipecmd-wrapper PART TOOL [OPTIONS]
 ```
 
-The IPECMD Wrapper now features a modern, rich command-line interface powered by Typer, providing enhanced validation, beautiful help output, and improved user experience.
+The IPECMD Wrapper features a modern, rich command-line interface powered by Typer, providing enhanced validation, beautiful help output, and improved user experience. The CLI follows the same format as the original IPECMD tool: only the device name and tool are required positional arguments.
 
-## Required Arguments
+## Required Positional Arguments
 
-All required arguments must be provided for the command to execute successfully.
+The CLI requires exactly two positional arguments, matching the original IPECMD format.
 
-### `--part`, `-P` DEVICE
-Target PIC microcontroller device.
+### `PART`
+Target PIC microcontroller device (positional argument).
 
 **Type:** TEXT
 **Required:** Yes
+**Position:** 1st argument
 
 **Example:**
 ```bash
-ipecmd-wrapper --part PIC16F876A ...
+ipecmd-wrapper PIC16F876A PK4 [OPTIONS]
 ```
 
-### `--tool`, `-T` PROGRAMMER
-Programmer type. The tool choice is validated against supported programmers.
+### `TOOL`
+Programmer type (positional argument). The tool choice is validated against supported programmers.
 
 **Type:** Enum (validated choices)
 **Required:** Yes
+**Position:** 2nd argument
 
 **Supported Options:**
 - `PK3` - PICkit 3
@@ -48,34 +50,36 @@ Programmer type. The tool choice is validated against supported programmers.
 
 **Example:**
 ```bash
-ipecmd-wrapper --tool PK4 ...
+ipecmd-wrapper PIC16F876A PK4 [OPTIONS]
 ```
+
+## Optional Arguments
 
 ### `--file`, `-F` HEXFILE
 Intel HEX file to program. The file path is validated to ensure it exists.
 
 **Type:** PATH (automatically validated)
-**Required:** Yes
+**Required:** No
+**Default:** None
 
 **Example:**
 ```bash
-ipecmd-wrapper --file firmware.hex ...
+ipecmd-wrapper PIC16F876A PK4 --file firmware.hex
 ```
 
-### `--power`, `-W` VOLTAGE
+### `--power`, `-P` VOLTAGE
 Target power voltage (VDD voltage from tool).
 
-**Type:** TEXT
-**Required:** Yes
+**Type:** FLOAT
+**Required:** No
+**Default:** None
 
 **Example:**
 ```bash
-ipecmd-wrapper --power 5.0 ...
+ipecmd-wrapper PIC16F876A PK4 --power 5.0
 # or
-ipecmd-wrapper --power 3.3 ...
+ipecmd-wrapper PIC16F876A PK4 --power 3.3
 ```
-
-## Optional Arguments
 
 ### `--memory`, `-M` TYPE
 Program Device memory regions.
@@ -154,7 +158,7 @@ Show help message and exit.
 Program a PIC16F876A with firmware.hex using PICkit 3:
 
 ```bash
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
+ipecmd-wrapper PIC16F876A PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
 ```
 
 ### Program with Erase and Verify
@@ -162,7 +166,7 @@ ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ip
 Erase the device, program it, and verify the program memory:
 
 ```bash
-ipecmd-wrapper --part PIC16F876A --tool PK4 --file firmware.hex --power 5.0 --erase --verify P --ipecmd-version 6.20
+ipecmd-wrapper PIC16F876A PK4 --file firmware.hex --power 5.0 --erase --verify P --ipecmd-version 6.20
 ```
 
 ### Test Programmer Connection
@@ -170,7 +174,7 @@ ipecmd-wrapper --part PIC16F876A --tool PK4 --file firmware.hex --power 5.0 --er
 Test if the programmer is properly connected without programming:
 
 ```bash
-ipecmd-wrapper --part PIC16F876A --tool PK4 --file firmware.hex --power 5.0 --test-programmer
+ipecmd-wrapper PIC16F876A PK4 --file firmware.hex --power 5.0 --test-programmer
 ```
 
 ### Program EEPROM Memory
@@ -178,7 +182,7 @@ ipecmd-wrapper --part PIC16F876A --tool PK4 --file firmware.hex --power 5.0 --te
 Program only EEPROM memory:
 
 ```bash
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file eeprom_data.hex --power 5.0 --memory E --ipecmd-version 6.20
+ipecmd-wrapper PIC16F876A PK3 --file eeprom_data.hex --power 5.0 --memory E --ipecmd-version 6.20
 ```
 
 ### Use Custom IPECMD Path
@@ -186,7 +190,7 @@ ipecmd-wrapper --part PIC16F876A --tool PK3 --file eeprom_data.hex --power 5.0 -
 Use a custom installation path for ipecmd.exe:
 
 ```bash
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ipecmd-path "C:\custom\path\ipecmd.exe"
+ipecmd-wrapper PIC16F876A PK3 --file firmware.hex --power 5.0 --ipecmd-path "C:\custom\path\ipecmd.exe"
 ```
 
 ### Advanced Programming with Multiple Options
@@ -194,7 +198,15 @@ ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ip
 Program with erase, verify, and VDD-first sequence:
 
 ```bash
-ipecmd-wrapper --part PIC18F4550 --tool PK4 --file firmware.hex --power 3.3 --erase --verify P --vdd-first --ipecmd-version 6.25
+ipecmd-wrapper PIC18F4550 PK4 --file firmware.hex --power 3.3 --erase --verify P --vdd-first --ipecmd-version 6.25
+```
+
+### Minimal Usage (Only Test Programmer)
+
+Test programmer connection with minimal arguments:
+
+```bash
+ipecmd-wrapper PIC16F876A PK4 --ipecmd-version 6.20 --test-programmer
 ```
 
 ## Rich Help Output
@@ -213,35 +225,35 @@ This will display a rich, color-coded help message with:
 
 ## Input Validation
 
-The new CLI provides enhanced validation:
+The CLI provides enhanced validation with clear error messages:
 
 ### Tool Validation
 ```bash
 # ✅ Valid tool choice
-ipecmd-wrapper --tool PK4 ...
+ipecmd-wrapper PIC16F876A PK4 [OPTIONS]
 
 # ❌ Invalid tool choice (will show available options)
-ipecmd-wrapper --tool INVALID ...
-# Error: Invalid value for '--tool' / '-T': 'INVALID' is not one of 'PK3', 'PK4', 'PK5', ...
+ipecmd-wrapper PIC16F876A INVALID [OPTIONS]
+# Error: Invalid value for 'TOOL': 'INVALID' is not one of 'PK3', 'PK4', 'PK5', ...
 ```
 
 ### File Path Validation
 ```bash
 # ✅ Existing file
-ipecmd-wrapper --file firmware.hex ...
+ipecmd-wrapper PIC16F876A PK4 --file firmware.hex
 
 # ❌ Non-existent file
-ipecmd-wrapper --file missing.hex ...
+ipecmd-wrapper PIC16F876A PK4 --file missing.hex
 # Error: Invalid value for '--file' / '-F': Path 'missing.hex' does not exist.
 ```
 
 ### Version Validation
 ```bash
 # ✅ Valid version
-ipecmd-wrapper --ipecmd-version 6.20 ...
+ipecmd-wrapper PIC16F876A PK4 --ipecmd-version 6.20
 
 # ❌ Invalid version
-ipecmd-wrapper --ipecmd-version 7.0 ...
+ipecmd-wrapper PIC16F876A PK4 --ipecmd-version 7.0
 # Error: Invalid value for '--ipecmd-version': '7.0' is not one of '5.50', '6.00', '6.05', ...
 ```
 

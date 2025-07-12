@@ -14,8 +14,7 @@ A Python wrapper for Microchip's IPECMD tool for PIC microcontroller programming
 # Install the package
 pip install ipecmd-wrapper
 
-# Basic usage with modern CLI
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
+# See the documentation for complete usage examples and CLI reference
 ```
 
 ## ✨ Features

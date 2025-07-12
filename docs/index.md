@@ -34,13 +34,13 @@ pip install ipecmd-wrapper
 
 ```bash
 # Program a PIC microcontroller with the new validated CLI
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
+ipecmd-wrapper PIC16F876A PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
 
 # Get beautiful, organized help
 ipecmd-wrapper --help
 
 # Test programmer connection
-ipecmd-wrapper --part PIC16F876A --tool PK4 --file firmware.hex --power 5.0 --test-programmer
+ipecmd-wrapper PIC16F876A PK4 --file firmware.hex --power 5.0 --test-programmer
 ```
 
 ### 🎨 Rich CLI Features

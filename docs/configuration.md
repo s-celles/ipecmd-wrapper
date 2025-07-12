@@ -31,10 +31,10 @@ All configuration options are available as command-line arguments. The new CLI u
 
 ```bash
 # Modern syntax (recommended)
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0
+ipecmd-wrapper PIC16F876A PK3 --file firmware.hex --power 5.0
 
-# Short aliases still supported
-ipecmd-wrapper -P PIC16F876A -T PK3 -F firmware.hex -W 5.0
+# With explicit options (also supported)
+ipecmd-wrapper PIC16F876A PK3 -F firmware.hex -W 5.0
 ```
 
 ## Environment Variables
