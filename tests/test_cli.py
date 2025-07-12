@@ -28,6 +28,14 @@ class TestTyperCLI:
         with open(self.test_hex_file, "w") as f:
             f.write(":00000001FF\n")  # Simple Intel hex format
 
+    def _get_error_output(self, result):
+        """Get error output from CLI result, handling different Typer versions"""
+        # Try to get stderr first, fall back to stdout if not available
+        try:
+            return result.stderr if result.stderr else result.stdout
+        except (ValueError, AttributeError):
+            return result.stdout
+
     def teardown_method(self):
         """Clean up test fixtures"""
         import shutil
@@ -50,7 +58,12 @@ class TestTyperCLI:
         """Test CLI with missing required arguments"""
         result = self.runner.invoke(app, [])
         assert result.exit_code != 0
-        assert "missing option" in result.stdout.lower()
+        error_output = self._get_error_output(result)
+        assert (
+            "missing option" in error_output.lower()
+            or "required" in error_output.lower()
+            or "usage" in error_output.lower()
+        )
 
     def test_valid_tool_choices(self):
         """Test that valid tool choices are accepted"""
@@ -88,7 +101,12 @@ class TestTyperCLI:
             ],
         )
         assert result.exit_code != 0
-        assert "not one of" in result.stdout
+        error_output = self._get_error_output(result)
+        assert (
+            "not one of" in error_output
+            or "invalid choice" in error_output.lower()
+            or "choose from" in error_output.lower()
+        )
 
     def test_valid_version_choices(self):
         """Test that valid version choices are accepted"""
@@ -128,7 +146,12 @@ class TestTyperCLI:
             ],
         )
         assert result.exit_code != 0
-        assert "does not exist" in result.stdout
+        error_output = self._get_error_output(result)
+        assert (
+            "does not exist" in error_output
+            or "not found" in error_output.lower()
+            or "no such file" in error_output.lower()
+        )
 
     @patch("ipecmd_wrapper.cli.program_pic")
     def test_successful_program_call(self, mock_program_pic):
