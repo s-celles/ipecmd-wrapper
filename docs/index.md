@@ -1,10 +1,10 @@
 # 🔧 IPECMD Wrapper
 
-A modern Python wrapper for the IPECMD toolchain, designed for programming PIC microcontrollers.
+A modern Python wrapper for the IPECMD toolchain, designed for programming PIC microcontrollers with a beautiful, validated CLI interface.
 
 ## 🌟 Overview
 
-IPECMD Wrapper provides a clean, Pythonic interface to the IPECMD command-line tool, making it easy to integrate PIC microcontroller programming into your Python projects and build systems.
+IPECMD Wrapper provides a clean, Pythonic interface to the IPECMD command-line tool, making it easy to integrate PIC microcontroller programming into your Python projects and build systems. The latest version features a modern Typer-powered CLI with rich formatting and comprehensive input validation.
 
 !!! warning
     This project is currently in active development. APIs may change between versions.
@@ -15,10 +15,12 @@ A significant portion of this project's content (including code, documentation, 
 ## ✨ Features
 
 - **🌐 Cross-platform**: Works on Windows, Linux, and macOS
-- **🚀 Easy to use**: Simple command-line interface and Python API
+- **🚀 Easy to use**: Modern CLI with rich help output and Python API
 - **🎯 Flexible**: Supports various PIC microcontrollers and programmers
-- **🛡️ Reliable**: Comprehensive error handling and validation
-- **🔧 Modern**: Built with modern Python packaging and development practices
+- **🛡️ Reliable**: Comprehensive error handling and input validation
+- **🔧 Modern**: Built with modern Python packaging, Typer CLI, and development practices
+- **✅ Validated**: Automatic validation of tool choices, file paths, and version selections
+- **🎨 Beautiful**: Rich, color-coded CLI output with clear error messages
 
 ## 🚀 Quick Start
 
@@ -28,15 +30,27 @@ A significant portion of this project's content (including code, documentation, 
 pip install ipecmd-wrapper
 ```
 
-### 💻 Command Line Usage
+### 💻 Modern Command Line Usage
 
 ```bash
-# Program a PIC microcontroller
-ipecmd-wrapper --device PIC16F876A --programmer pickit3 --hex-file firmware.hex
+# Program a PIC microcontroller with the new validated CLI
+ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
 
-# Get help
+# Get beautiful, organized help
 ipecmd-wrapper --help
+
+# Test programmer connection
+ipecmd-wrapper --part PIC16F876A --tool PK4 --file firmware.hex --power 5.0 --test-programmer
 ```
+
+### 🎨 Rich CLI Features
+
+The new CLI provides:
+
+- **✅ Input Validation**: Tool choices, file paths, and versions are automatically validated
+- **🎯 Required vs Optional**: Clear distinction between required and optional arguments
+- **📝 Rich Help**: Beautiful, organized help output with syntax highlighting
+- **🔍 Clear Errors**: Helpful error messages with suggestions for valid inputs
 
 ### 🐍 Python API
 

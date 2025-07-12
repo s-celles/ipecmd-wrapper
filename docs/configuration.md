@@ -1,13 +1,40 @@
 # Configuration
 
-IPECMD Wrapper can be configured through command-line arguments, environment variables, or configuration files.
+IPECMD Wrapper can be configured through command-line arguments, environment variables, or configuration files. The new Typer-powered CLI provides enhanced validation and user experience.
+
+## Modern CLI Features
+
+### Input Validation
+
+The CLI automatically validates:
+- **Tool choices**: Only supported programmers (PK3, PK4, ICD3, etc.) are accepted
+- **Version choices**: Only supported MPLAB IPE versions (5.50, 6.00, 6.05, 6.10, 6.15, 6.20, 6.25) are accepted
+- **File paths**: Hex files are verified to exist before processing
+- **Required arguments**: All required parameters must be provided
+
+### Rich Help Output
+
+Get beautiful, organized help with:
+```bash
+ipecmd-wrapper --help
+```
+
+This displays:
+- ✅ Clear separation between required and optional arguments
+- 🎨 Syntax highlighting and rich formatting
+- 📝 Detailed descriptions for each option
+- 🔍 Validation information for enum choices
 
 ## Command Line Arguments
 
-All configuration options are available as command-line arguments:
+All configuration options are available as command-line arguments. The new CLI uses long-form names by default with short aliases:
 
 ```bash
-ipecmd-wrapper --help
+# Modern syntax (recommended)
+ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0
+
+# Short aliases still supported
+ipecmd-wrapper -P PIC16F876A -T PK3 -F firmware.hex -W 5.0
 ```
 
 ## Environment Variables

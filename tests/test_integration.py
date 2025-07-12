@@ -4,13 +4,15 @@ Integration tests for IPECMD Wrapper
 Test the integration between different components of the IPECMD wrapper.
 """
 
+import os
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+from typer.testing import CliRunner
 
-from ipecmd_wrapper.cli import main
+from ipecmd_wrapper.cli import app
 
 
 @pytest.mark.integration
@@ -19,6 +21,14 @@ class TestIntegration:
 
     def test_cli_to_core_integration(self):
         """Test integration between CLI and core modules"""
+        # Create a temporary hex file for testing
+        temp_dir = tempfile.mkdtemp()
+        test_hex_file = os.path.join(temp_dir, "test.hex")
+        with open(test_hex_file, "w") as f:
+            f.write(":00000001FF\n")
+
+        runner = CliRunner()
+
         with (
             patch("ipecmd_wrapper.core.get_ipecmd_path") as mock_get_path,
             patch("ipecmd_wrapper.core.validate_ipecmd") as mock_validate,
@@ -34,31 +44,35 @@ class TestIntegration:
             mock_program.return_value = True
 
             # Test CLI to core integration
-            try:
-                main(
-                    [
-                        "-P",
-                        "16F876A",
-                        "-T",
-                        "PK3",
-                        "-F",
-                        "test.hex",
-                        "-W",
-                        "5.0",
-                        "--ipecmd-version",
-                        "6.20",
-                    ]
-                )
-            except SystemExit:
-                # Expected when tool execution completes
-                pass
+            result = runner.invoke(
+                app,
+                [
+                    "--part",
+                    "16F876A",
+                    "--tool",
+                    "PK3",
+                    "--file",
+                    test_hex_file,
+                    "--power",
+                    "5.0",
+                    "--ipecmd-version",
+                    "6.20",
+                ],
+            )
 
             # Verify the integration chain
             mock_get_path.assert_called()
             mock_validate.assert_called()
 
+        # Clean up
+        import shutil
+
+        shutil.rmtree(temp_dir)
+
     def test_end_to_end_workflow(self):
         """Test complete end-to-end workflow"""
+        runner = CliRunner()
+
         with tempfile.TemporaryDirectory() as temp_dir:
             # Create test hex file
             hex_file = Path(temp_dir) / "test.hex"
@@ -83,23 +97,21 @@ class TestIntegration:
                 mock_program.return_value = True
 
                 # Test complete workflow
-                try:
-                    main(
-                        [
-                            "-P",
-                            "16F876A",
-                            "-T",
-                            "PK3",
-                            "-F",
-                            str(hex_file),
-                            "--ipecmd-version",
-                            "6.20",
-                            "-W",
-                            "5.0",
-                        ]
-                    )
-                except SystemExit:
-                    pass
+                result = runner.invoke(
+                    app,
+                    [
+                        "--part",
+                        "16F876A",
+                        "--tool",
+                        "PK3",
+                        "--file",
+                        str(hex_file),
+                        "--ipecmd-version",
+                        "6.20",
+                        "--power",
+                        "5.0",
+                    ],
+                )
 
                 # Verify workflow executed
                 mock_get_path.assert_called()
@@ -108,28 +120,52 @@ class TestIntegration:
 
     def test_error_handling_integration(self):
         """Test error handling across components"""
+        # Create a temporary hex file for testing
+        temp_dir = tempfile.mkdtemp()
+        test_hex_file = os.path.join(temp_dir, "test.hex")
+        with open(test_hex_file, "w") as f:
+            f.write(":00000001FF\n")
+
+        runner = CliRunner()
+
         with patch("ipecmd_wrapper.core.get_ipecmd_path") as mock_get_path:
             # Test error propagation from core to CLI
             mock_get_path.side_effect = ValueError("Test error")
 
-            with pytest.raises(SystemExit):
-                main(
-                    [
-                        "-P",
-                        "16F876A",
-                        "-T",
-                        "PK3",
-                        "-F",
-                        "test.hex",
-                        "-W",
-                        "5.0",
-                        "--ipecmd-version",
-                        "6.20",
-                    ]
-                )
+            result = runner.invoke(
+                app,
+                [
+                    "--part",
+                    "16F876A",
+                    "--tool",
+                    "PK3",
+                    "--file",
+                    test_hex_file,
+                    "--power",
+                    "5.0",
+                    "--ipecmd-version",
+                    "6.20",
+                ],
+            )
+
+            # Should exit with error code
+            assert result.exit_code != 0
+
+        # Clean up
+        import shutil
+
+        shutil.rmtree(temp_dir)
 
     def test_configuration_integration(self):
         """Test configuration handling across components"""
+        # Create a temporary hex file for testing
+        temp_dir = tempfile.mkdtemp()
+        test_hex_file = os.path.join(temp_dir, "test.hex")
+        with open(test_hex_file, "w") as f:
+            f.write(":00000001FF\n")
+
+        runner = CliRunner()
+
         with (
             patch("ipecmd_wrapper.core.get_ipecmd_path") as mock_get_path,
             patch("ipecmd_wrapper.core.validate_ipecmd") as mock_validate,
@@ -143,28 +179,31 @@ class TestIntegration:
             mock_program.return_value = True
 
             # Test custom path configuration
-            try:
-                main(
-                    [
-                        "-P",
-                        "16F876A",
-                        "-T",
-                        "PK3",
-                        "-F",
-                        "test.hex",
-                        "-W",
-                        "5.0",
-                        "--ipecmd-path",
-                        r"C:\custom\path\ipecmd.exe",
-                    ]
-                )
-            except SystemExit:
-                pass
+            result = runner.invoke(
+                app,
+                [
+                    "--part",
+                    "16F876A",
+                    "--tool",
+                    "PK3",
+                    "--file",
+                    test_hex_file,
+                    "--power",
+                    "5.0",
+                    "--ipecmd-path",
+                    r"C:\custom\path\ipecmd.exe",
+                ],
+            )
 
             # Verify custom configuration was used
             mock_validate.assert_called_with(
                 r"C:\custom\path\ipecmd.exe", "custom path"
             )
+
+        # Clean up
+        import shutil
+
+        shutil.rmtree(temp_dir)
 
 
 @pytest.mark.integration

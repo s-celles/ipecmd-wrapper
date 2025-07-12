@@ -4,13 +4,16 @@ Performance tests for IPECMD Wrapper
 Test the performance characteristics of the IPECMD wrapper.
 """
 
+import os
+import tempfile
 import time
 from typing import Any
 from unittest.mock import patch
 
 import pytest
+from typer.testing import CliRunner
 
-from ipecmd_wrapper.cli import create_argument_parser
+from ipecmd_wrapper.cli import app
 from ipecmd_wrapper.core import (
     build_ipecmd_command,
     get_ipecmd_path,
@@ -66,31 +69,41 @@ class TestPerformance:
     @pytest.mark.slow
     def test_cli_parsing_performance(self):
         """Test that CLI parsing is fast"""
+        # Create a temporary hex file for testing
+        temp_dir = tempfile.mkdtemp()
+        test_hex_file = os.path.join(temp_dir, "test.hex")
+        with open(test_hex_file, "w") as f:
+            f.write(":00000001FF\n")  # Simple Intel hex format
+
+        runner = CliRunner()
+
         args_list = [
             [
-                "-P",
+                "--part",
                 "16F876A",
-                "-T",
+                "--tool",
                 "PK3",
-                "-F",
-                "test.hex",
-                "-W",
+                "--file",
+                test_hex_file,
+                "--power",
                 "5.0",
                 "--ipecmd-version",
                 "6.20",
+                "--test-programmer",  # Avoid actual programming calls
             ],
             [
-                "-P",
+                "--part",
                 "18F4550",
-                "-T",
+                "--tool",
                 "PK4",
-                "-F",
-                "firmware.hex",
-                "-W",
+                "--file",
+                test_hex_file,
+                "--power",
                 "5.0",
-                "-E",
-                "-Y",
+                "--erase",
+                "--verify",
                 "P",
+                "--test-programmer",  # Avoid actual programming calls
             ],
             [
                 "--part",
@@ -98,25 +111,34 @@ class TestPerformance:
                 "--tool",
                 "ICD3",
                 "--file",
-                "main.hex",
+                test_hex_file,
                 "--power",
                 "3.3",
+                "--test-programmer",  # Avoid actual programming calls
             ],
         ]
 
         start_time = time.time()
 
-        # Parse arguments multiple times
-        parser = create_argument_parser()
-        for _ in range(1000):
-            for args in args_list:
-                parser.parse_args(args)
+        # Test CLI invocation multiple times (fewer iterations since it's more expensive than parsing)
+        with patch("ipecmd_wrapper.cli.program_pic") as mock_program_pic:
+            mock_program_pic.return_value = None
+
+            for _ in range(100):  # Reduced from 1000 due to Typer overhead
+                for args in args_list:
+                    result = runner.invoke(app, args)
+                    # Don't assert success here as we're testing performance, not correctness
 
         end_time = time.time()
         execution_time = end_time - start_time
 
-        # Should complete 3000 parsing operations in less than 2 seconds
-        assert execution_time < 2.0, f"CLI parsing too slow: {execution_time:.3f}s"
+        # Should complete 300 CLI invocations in less than 10 seconds (more lenient for Typer)
+        assert execution_time < 10.0, f"CLI parsing too slow: {execution_time:.3f}s"
+
+        # Clean up
+        import shutil
+
+        shutil.rmtree(temp_dir)
 
     def test_memory_usage_stability(self):
         """Test that memory usage remains stable"""

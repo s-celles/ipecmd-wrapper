@@ -7,23 +7,78 @@ This page provides practical examples of using IPECMD Wrapper in various scenari
 ### Simple Programming
 
 ```bash
-# Program a PIC16F876A with firmware.hex
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0
+# Program a PIC16F876A with firmware.hex using PICkit 3
+ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --ipecmd-version 6.20
 ```
 
 ### Programming with Verification
 
 ```bash
-# Program and verify
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --erase --verify P
+# Program and verify program memory
+ipecmd-wrapper --part PIC16F876A --tool PK4 --file firmware.hex --power 5.0 --erase --verify P --ipecmd-version 6.20
 ```
 
 ### Programming EEPROM
 
 ```bash
-# Program EEPROM data
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file eeprom_data.hex --power 5.0 --memory E
+# Program EEPROM data only
+ipecmd-wrapper --part PIC16F876A --tool PK3 --file eeprom_data.hex --power 5.0 --memory E --ipecmd-version 6.20
 ```
+
+## Advanced Programming Examples
+
+### Multi-Memory Programming
+
+```bash
+# Program both program memory and EEPROM, then verify both
+ipecmd-wrapper --part PIC18F4550 --tool PK4 --file combined.hex --power 3.3 --memory "P,E" --verify "P,E" --ipecmd-version 6.25
+```
+
+### Custom Programmer Settings
+
+```bash
+# Use VDD-first sequence with custom path
+ipecmd-wrapper --part PIC16F877A --tool ICD4 --file firmware.hex --power 5.0 --vdd-first --ipecmd-path "C:\Custom\MPLAB\ipecmd.exe"
+```
+
+### Test Mode
+
+```bash
+# Test programmer connection without programming
+ipecmd-wrapper --part PIC16F876A --tool PK4 --file firmware.hex --power 5.0 --test-programmer
+```
+
+## Modern CLI Features Examples
+
+### Input Validation
+
+The new Typer-powered CLI provides automatic validation:
+
+```bash
+# ✅ Valid tool choice
+ipecmd-wrapper --part PIC16F876A --tool PK4 --file firmware.hex --power 5.0
+
+# ❌ Invalid tool choice (shows helpful error)
+ipecmd-wrapper --part PIC16F876A --tool INVALID_TOOL --file firmware.hex --power 5.0
+# Error: Invalid value for '--tool' / '-T': 'INVALID_TOOL' is not one of 'PK3', 'PK4', 'PK5', ...
+
+# ❌ Missing file (automatic validation)
+ipecmd-wrapper --part PIC16F876A --tool PK3 --file missing.hex --power 5.0
+# Error: Invalid value for '--file' / '-F': Path 'missing.hex' does not exist.
+```
+
+### Rich Help Output
+
+```bash
+# Get beautiful, organized help
+ipecmd-wrapper --help
+```
+
+This displays rich, color-coded help with:
+- Clear separation of required vs optional arguments
+- Detailed descriptions for each option
+- Validation information for enum choices
+- Syntax highlighting
 
 ## Python API Examples
 
@@ -388,7 +443,7 @@ if %errorlevel% neq 0 (
 )
 
 echo Programming device...
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --erase --verify P
+ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --erase --verify P --ipecmd-version 6.20
 
 if %errorlevel% neq 0 (
     echo Programming failed!
@@ -410,7 +465,7 @@ echo "Building firmware..."
 xc8-cc main.c -mcpu=PIC16F876A -o firmware.hex
 
 echo "Programming device..."
-ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --erase --verify P
+ipecmd-wrapper --part PIC16F876A --tool PK3 --file firmware.hex --power 5.0 --erase --verify P --ipecmd-version 6.20
 
 echo "✅ Build and programming completed successfully!"
 ```

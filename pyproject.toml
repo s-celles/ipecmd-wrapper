@@ -28,6 +28,7 @@ classifiers = [
 dependencies = [
     "colorama>=0.4.4",
     "logbook>=1.5.3",
+    "typer>=0.9.0",
 ]
 
 [project.optional-dependencies]
@@ -60,7 +61,7 @@ Issues = "https://github.com/s-celles/ipecmd-wrapper/issues"
 Changelog = "https://s-celles.github.io/ipecmd-wrapper/changelog/"
 
 [project.scripts]
-ipecmd-wrapper = "ipecmd_wrapper.cli:main"
+ipecmd-wrapper = "ipecmd_wrapper.cli:cli_main"
 
 [tool.setuptools.packages.find]
 where = ["."]

@@ -1,6 +1,6 @@
 # IPECMD Wrapper Development
 
-This directory contains the IPECMD Wrapper package development environment.
+This directory contains the IPECMD Wrapper package development environment with modern tooling.
 
 ## Quick Start
 
@@ -17,8 +17,9 @@ pytest
 # Run tests with coverage
 pytest --cov=ipecmd_wrapper
 
-# Format code
-black .
+# Format and lint code (modern unified tooling)
+ruff format .
+ruff check .
 
 # Type checking
 mypy .
@@ -26,6 +27,17 @@ mypy .
 # Build package
 python -m build
 ```
+
+## Modern Development Stack
+
+This project uses modern Python development tools:
+
+- **🎨 Ruff**: Unified formatter and linter (replaces black + flake8 + isort)
+- **🎯 Typer**: Modern CLI framework with rich formatting and validation
+- **✅ pytest**: Comprehensive testing framework
+- **🔍 mypy**: Static type checking
+- **📦 build**: Modern package building
+- **🔄 pre-commit**: Git hooks for code quality
 
 ## Package Structure
 
@@ -37,11 +49,11 @@ ipecmd_wrapper/
 ├── .gitignore            # Git ignore rules
 ├── ipecmd_wrapper/       # Main package directory
 │   ├── __init__.py       # Package initialization
-│   ├── cli.py           # Command-line interface
+│   ├── cli.py           # Modern Typer CLI with validation
 │   └── core.py          # Core functionality
-└── tests/               # Test suite
+└── tests/               # Comprehensive test suite
     ├── __init__.py
-    ├── test_cli.py
+    ├── test_cli.py      # Typer CLI tests
     ├── test_core.py
     ├── test_integration.py
     ├── test_performance.py
