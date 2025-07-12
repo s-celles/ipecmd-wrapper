@@ -47,16 +47,11 @@ class TestIntegration:
             runner.invoke(
                 app,
                 [
-                    "--part",
-                    "16F876A",
-                    "--tool",
-                    "PK3",
-                    "--file",
-                    test_hex_file,
-                    "--power",
-                    "5.0",
-                    "--ipecmd-version",
-                    "6.20",
+                    "16F876A",      # part (positional)
+                    "PK3",          # tool (positional)
+                    "--file", test_hex_file,
+                    "--power", "5.0",
+                    "--ipecmd-version", "6.20",
                 ],
             )
 
@@ -100,16 +95,11 @@ class TestIntegration:
                 runner.invoke(
                     app,
                     [
-                        "--part",
-                        "16F876A",
-                        "--tool",
-                        "PK3",
-                        "--file",
-                        str(hex_file),
-                        "--ipecmd-version",
-                        "6.20",
-                        "--power",
-                        "5.0",
+                        "16F876A",      # part (positional)
+                        "PK3",          # tool (positional)
+                        "--file", str(hex_file),
+                        "--power", "5.0",
+                        "--ipecmd-version", "6.20",
                     ],
                 )
 
@@ -135,16 +125,11 @@ class TestIntegration:
             result = runner.invoke(
                 app,
                 [
-                    "--part",
-                    "16F876A",
-                    "--tool",
-                    "PK3",
-                    "--file",
-                    test_hex_file,
-                    "--power",
-                    "5.0",
-                    "--ipecmd-version",
-                    "6.20",
+                    "16F876A",      # part (positional)
+                    "PK3",          # tool (positional)
+                    "--file", test_hex_file,
+                    "--power", "5.0",
+                    "--ipecmd-version", "6.20",
                 ],
             )
 
@@ -182,16 +167,11 @@ class TestIntegration:
             runner.invoke(
                 app,
                 [
-                    "--part",
-                    "16F876A",
-                    "--tool",
-                    "PK3",
-                    "--file",
-                    test_hex_file,
-                    "--power",
-                    "5.0",
-                    "--ipecmd-path",
-                    r"C:\custom\path\ipecmd.exe",
+                    "16F876A",      # part (positional)
+                    "PK3",          # tool (positional)
+                    "--file", test_hex_file,
+                    "--power", "5.0",
+                    "--ipecmd-path", r"C:\custom\path\ipecmd.exe",
                 ],
             )
 

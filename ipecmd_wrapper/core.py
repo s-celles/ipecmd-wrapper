@@ -169,8 +169,9 @@ def build_ipecmd_command(args: Any, ipecmd_path: str) -> list[str]:
     # Add part selection
     cmd_args.append(f"-P{args.part}")
 
-    # Add hex file
-    cmd_args.append(f"-F{args.file}")
+    # Add hex file (if provided)
+    if args.file:
+        cmd_args.append(f"-F{args.file}")
 
     # Add programming option
     if args.memory:
@@ -182,8 +183,9 @@ def build_ipecmd_command(args: Any, ipecmd_path: str) -> list[str]:
     if args.verify:
         cmd_args.append(f"-Y{args.verify}")
 
-    # Add power option
-    cmd_args.append(f"-W{args.power}")
+    # Add power option (if provided)
+    if args.power:
+        cmd_args.append(f"-W{args.power}")
 
     # Add erase option
     if args.erase:
@@ -332,8 +334,8 @@ def program_pic(args: Any) -> None:
         ipecmd_path = get_ipecmd_path(version=args.ipecmd_version)
         version_info = f"v{args.ipecmd_version}"
 
-    # Validate HEX file
-    if not validate_hex_file(args.file):
+    # Validate HEX file (if provided)
+    if args.file and not validate_hex_file(args.file):
         sys.exit(1)
 
     # Validate IPECMD

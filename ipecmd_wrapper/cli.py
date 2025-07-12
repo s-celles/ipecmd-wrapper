@@ -73,23 +73,18 @@ class Args:
 
 @app.command()
 def main(
-    # Required arguments
-    part: Annotated[
-        str, typer.Option("--part", "-P", help="Part Selection (required)")
-    ] = ...,
-    tool: Annotated[
-        ToolChoice, typer.Option("--tool", "-T", help="Tool Selection (required)")
-    ] = ...,
+    # Required positional arguments (matching IPECMD format)
+    part: Annotated[str, typer.Argument(help="Part Selection")],
+    tool: Annotated[ToolChoice, typer.Argument(help="Tool Selection")],
+    # Optional file and power arguments
     file: Annotated[
-        Path,
-        typer.Option("--file", "-F", help="Hex File Selection (required)", exists=True),
-    ] = ...,
+        Optional[Path],
+        typer.Option("--file", "-F", help="Hex File Selection", exists=True),
+    ] = None,
     power: Annotated[
-        str,
-        typer.Option(
-            "--power", "-W", help="Power target from tool (VDD voltage, required)"
-        ),
-    ] = ...,
+        Optional[float],
+        typer.Option("--power", "-P", help="Power target from tool (VDD voltage)"),
+    ] = None,
     # Optional programming arguments
     memory: Annotated[
         str,
@@ -152,6 +147,14 @@ def main(
     IPECMD wrapper for PIC programming
 
     A Python wrapper for Microchip's IPECMD tool for PIC microcontroller programming.
+
+    Arguments:
+        part: Part Selection (e.g., PIC16F877A)
+        tool: Tool Selection (PK3, PK4, PK5, etc.)
+
+    Options:
+        --file: Path to hex file for programming
+        --power: Power target from tool (VDD voltage, e.g., 5.0)
     """
     log.info("=== IPECMD WRAPPER ===")
 
@@ -167,8 +170,10 @@ def main(
     args = Args(
         part=part,
         tool=tool.value,  # Get string value from enum
-        file=str(file),  # Convert Path to string for compatibility
-        power=power,
+        file=str(file) if file else None,  # Convert Path to string or None
+        power=str(power)
+        if power is not None
+        else None,  # Convert numeric to string or None
         memory=memory,
         verify=verify,
         erase=erase,

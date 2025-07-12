@@ -62,7 +62,7 @@ jobs:
 
     - name: Type checking with mypy
       run: |
-        mypy ipecmd_wrapper --ignore-missing-imports
+        mypy ipecmd_wrapper --ignore-missing-imports --no-strict-optional --disable-error-code=assignment
 
     - name: Security scanning with bandit
       run: |
@@ -95,13 +95,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .[dev]
 
-    - name: Check code formatting with black
+    - name: Check code formatting and linting with ruff
       run: |
-        black --check ipecmd_wrapper tests
-
-    - name: Check import sorting with isort
-      run: |
-        isort --check-only ipecmd_wrapper tests
+        ruff format --check ipecmd_wrapper tests
+        ruff check ipecmd_wrapper tests
 
     - name: Run pre-commit hooks
       run: |

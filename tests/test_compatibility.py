@@ -231,25 +231,17 @@ class TestIntegrationCompatibility:
 
         test_commands = [
             [
-                "--part",
-                "16F876A",
-                "--tool",
-                "PK3",
-                "--file",
-                test_hex_file,
-                "--power",
-                "5.0",
+                "16F876A",      # part (positional)
+                "PK3",          # tool (positional)
+                "--file", test_hex_file,
+                "--power", "5.0",
                 "--test-programmer",
             ],
             [
-                "--part",
-                "18F4550",
-                "--tool",
-                "PK4",
-                "--file",
-                test_hex_file,
-                "--power",
-                "5.0",
+                "18F4550",      # part (positional)
+                "PK4",          # tool (positional)
+                "--file", test_hex_file,
+                "--power", "5.0",
                 "--test-programmer",
             ],
         ]

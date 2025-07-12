@@ -71,14 +71,10 @@ class TestTyperCLI:
             result = self.runner.invoke(
                 app,
                 [
-                    "--tool",
-                    tool.value,
-                    "--part",
-                    "PIC16F877A",
-                    "--file",
-                    self.test_hex_file,
-                    "--power",
-                    "5.0",
+                    "PIC16F877A",    # part (positional)
+                    tool.value,      # tool (positional)
+                    "--file", self.test_hex_file,
+                    "--power", "5.0",
                     "--test-programmer",
                 ],
             )
@@ -90,14 +86,10 @@ class TestTyperCLI:
         result = self.runner.invoke(
             app,
             [
-                "--tool",
-                "INVALID",
-                "--part",
-                "PIC16F877A",
-                "--file",
-                self.test_hex_file,
-                "--power",
-                "5.0",
+                "PIC16F877A",    # part (positional)
+                "INVALID",       # tool (invalid, positional)
+                "--file", self.test_hex_file,
+                "--power", "5.0",
             ],
         )
         assert result.exit_code != 0
@@ -114,16 +106,11 @@ class TestTyperCLI:
             result = self.runner.invoke(
                 app,
                 [
-                    "--tool",
-                    "PK4",
-                    "--part",
-                    "PIC16F877A",
-                    "--file",
-                    self.test_hex_file,
-                    "--power",
-                    "5.0",
-                    "--ipecmd-version",
-                    version.value,
+                    "PIC16F877A",    # part (positional)
+                    "PK4",           # tool (positional)
+                    "--file", self.test_hex_file,
+                    "--power", "5.0",
+                    "--ipecmd-version", version.value,
                     "--test-programmer",
                 ],
             )
@@ -135,14 +122,10 @@ class TestTyperCLI:
         result = self.runner.invoke(
             app,
             [
-                "--tool",
-                "PK4",
-                "--part",
-                "PIC16F877A",
-                "--file",
-                "nonexistent.hex",
-                "--power",
-                "5.0",
+                "PIC16F877A",    # part (positional)
+                "PK4",           # tool (positional)
+                "--file", "nonexistent.hex",
+                "--power", "5.0",
             ],
         )
         assert result.exit_code != 0
@@ -161,20 +144,13 @@ class TestTyperCLI:
         self.runner.invoke(
             app,
             [
-                "--tool",
-                "PK4",
-                "--part",
-                "PIC16F877A",
-                "--file",
-                self.test_hex_file,
-                "--power",
-                "5.0",
-                "--ipecmd-version",
-                "6.20",
-                "--memory",
-                "P",
-                "--verify",
-                "P",
+                "PIC16F877A",    # part (positional)
+                "PK4",           # tool (positional)
+                "--file", self.test_hex_file,
+                "--power", "5.0",
+                "--ipecmd-version", "6.20",
+                "--memory", "P",
+                "--verify", "P",
                 "--erase",
             ],
         )
@@ -189,7 +165,7 @@ class TestTyperCLI:
         assert args.part == "PIC16F877A"
         assert args.tool == "PK4"  # String value from enum
         assert args.file == self.test_hex_file
-        assert args.power == "5.0"
+        assert args.power == "5.0"  # Converted to string in Args
         assert args.ipecmd_version == "6.20"  # String value from enum
         assert args.memory == "P"
         assert args.verify == "P"
@@ -203,16 +179,11 @@ class TestTyperCLI:
         self.runner.invoke(
             app,
             [
-                "--tool",
-                "PK4",
-                "--part",
-                "PIC16F877A",
-                "--file",
-                self.test_hex_file,
-                "--power",
-                "5.0",
-                "--ipecmd-version",
-                "6.20",  # Required parameter
+                "PIC16F877A",    # part (positional)
+                "PK4",           # tool (positional)
+                "--file", self.test_hex_file,
+                "--power", "5.0",
+                "--ipecmd-version", "6.20",  # Required parameter
                 "--test-programmer",
             ],
         )
