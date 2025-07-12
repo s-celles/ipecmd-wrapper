@@ -7,7 +7,7 @@ This module contains the main functions for interacting with MPLAB IPE's IPECMD 
 import subprocess  # nosec B404
 import sys
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from .logger import log
 
@@ -146,7 +146,7 @@ def validate_hex_file(hex_file_path: str) -> bool:
     return True
 
 
-def build_ipecmd_command(args: Any, ipecmd_path: str) -> List[str]:
+def build_ipecmd_command(args: Any, ipecmd_path: str) -> list[str]:
     """
     Build IPECMD command arguments
 
@@ -222,7 +222,7 @@ def detect_programmer(ipecmd_path: str, part: str, tool: str) -> bool:
         if result.returncode != 0:
             log.error("Programmer detection failed!")
             log.warning("Check programmer connection and try again")
-            log.error("STDERR: %s" % result.stderr)
+            log.error(f"STDERR: {result.stderr}")
             return False
         log.info("Programmer detection successful")
         return True
@@ -231,7 +231,7 @@ def detect_programmer(ipecmd_path: str, part: str, tool: str) -> bool:
         return False
 
 
-def _get_version_suggestions(current_version: str) -> List[str]:
+def _get_version_suggestions(current_version: str) -> list[str]:
     """
     Get alternative version suggestions for troubleshooting
 
@@ -266,7 +266,7 @@ def _get_version_suggestions(current_version: str) -> List[str]:
 
 
 def execute_programming(
-    cmd_args: List[str], part: str, tool: str, ipecmd_version: Optional[str]
+    cmd_args: list[str], part: str, tool: str, ipecmd_version: Optional[str]
 ) -> bool:
     """
     Execute the programming command

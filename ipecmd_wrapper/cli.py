@@ -7,7 +7,7 @@ This module provides the main entry point for the IPECMD wrapper.
 
 import argparse
 import sys
-from typing import List, Optional
+from typing import Optional
 
 from .core import TOOL_CHOICES, VERSION_CHOICES, program_pic
 from .logger import log
@@ -94,7 +94,7 @@ def create_argument_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: Optional[List[str]] = None) -> None:
+def main(argv: Optional[list[str]] = None) -> None:
     """
     Main entry point for the IPECMD wrapper CLI
 

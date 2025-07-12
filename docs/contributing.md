@@ -78,17 +78,15 @@ python -m pytest -n auto
 We maintain high code quality standards:
 
 ```bash
-# Format code
-black .
-
-# Sort imports
-isort .
-
-# Lint code
-flake8 .
+# Format and lint code (replaces black, isort, flake8)
+ruff check --fix .
+ruff format .
 
 # Type checking
 mypy .
+
+# Security analysis
+bandit -r ipecmd_wrapper/
 
 # Run all pre-commit hooks
 pre-commit run --all-files
@@ -136,7 +134,7 @@ def test_feature_with_valid_input_succeeds():
 
 We follow PEP 8 with some modifications:
 
-- Line length: 88 characters (Black default)
+- Line length: 88 characters (Ruff default)
 - Use double quotes for strings
 - Use type hints where appropriate
 - Document public functions and classes

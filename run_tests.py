@@ -9,11 +9,10 @@ with various configurations.
 import argparse
 import subprocess  # nosec B404
 import sys
-from typing import List
 
 
 def run_command(
-    cmd: List[str], description: str = "Running command", verbose: bool = False
+    cmd: list[str], description: str = "Running command", verbose: bool = False
 ) -> bool:
     """Run a command and return its result"""
     if verbose:
@@ -21,9 +20,7 @@ def run_command(
         print(f"Command: {' '.join(cmd)}")
 
     try:
-        result = subprocess.run(
-            cmd, capture_output=not verbose, text=True, check=True
-        )  # nosec B603
+        result = subprocess.run(cmd, capture_output=not verbose, text=True, check=True)  # nosec B603
         if verbose and result.stdout:
             print(result.stdout)
         if verbose and result.stderr:

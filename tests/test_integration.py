@@ -25,7 +25,6 @@ class TestIntegration:
             patch("ipecmd_wrapper.core.validate_hex_file") as mock_validate_hex,
             patch("ipecmd_wrapper.core.execute_programming") as mock_program,
         ):
-
             # Setup mocks
             mock_get_path.return_value = (
                 r"C:\MPLABX\v6.20\mplab_platform\mplab_ipe\ipecmd.exe"
@@ -76,7 +75,6 @@ class TestIntegration:
                 patch("ipecmd_wrapper.core.get_ipecmd_path") as mock_get_path,
                 patch("ipecmd_wrapper.core.execute_programming") as mock_program,
             ):
-
                 # Setup mocks
                 mock_get_path.return_value = (
                     r"C:\MPLABX\v6.20\mplab_platform\mplab_ipe\ipecmd.exe"
@@ -138,7 +136,6 @@ class TestIntegration:
             patch("ipecmd_wrapper.core.validate_hex_file") as mock_validate_hex,
             patch("ipecmd_wrapper.core.execute_programming") as mock_program,
         ):
-
             # Setup mocks
             mock_get_path.return_value = r"C:\custom\path\ipecmd.exe"
             mock_validate.return_value = True

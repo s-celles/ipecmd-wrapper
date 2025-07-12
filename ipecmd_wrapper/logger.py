@@ -3,7 +3,6 @@ Logging configuration with colorama and logbook
 """
 
 import sys
-from typing import Dict
 
 from colorama import Fore, Style, init
 from logbook import Logger, LogRecord, StreamHandler
@@ -13,7 +12,7 @@ init()  # Initialize colorama
 
 class ColoredFormatter:
     def __init__(self) -> None:
-        self.colors: Dict[str, str] = {
+        self.colors: dict[str, str] = {
             "DEBUG": Fore.CYAN,
             "INFO": Fore.GREEN,
             "WARNING": Fore.YELLOW,
