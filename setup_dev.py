@@ -224,8 +224,8 @@ def show_next_steps() -> None:
 
     print_colored("📚 Documentation:", Colors.BOLD)
     print("- README.md: Project overview and usage")
-    print("- CONTRIBUTING.md: Contribution guidelines")
-    print("- DEVELOPMENT.md: Development guide")
+    print("- docs/contributing.md: Contribution guidelines")
+    print("- docs/development.md: Development guide")
 
     print_colored("\n🛠️  Development commands:", Colors.BOLD)
     print("- make help: Show all available make commands")

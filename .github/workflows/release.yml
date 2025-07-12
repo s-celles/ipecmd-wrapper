@@ -84,7 +84,7 @@ jobs:
         body: |
           ## Changes
 
-          See [CHANGELOG.md](https://github.com/s-celles/ipecmd-wrapper/blob/main/CHANGELOG.md) for details.
+          See [CHANGELOG.md](https://s-celles.github.io/ipecmd-wrapper/changelog/) for details.
 
           ## Installation
 

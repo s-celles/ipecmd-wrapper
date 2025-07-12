@@ -46,7 +46,7 @@ The Python wrapper code in this package is released under the **MIT License** (s
 - **[💾 Repository](https://github.com/s-celles/ipecmd-wrapper)** - Source code
 - **[🐛 Issues](https://github.com/s-celles/ipecmd-wrapper/issues)** - Bug reports
 - **[💡 Feature Requests](https://github.com/s-celles/ipecmd-wrapper/discussions)** - Discussions and feature requests
-- **[📝 Changelog](https://github.com/s-celles/ipecmd-wrapper/blob/main/CHANGELOG.md)** - Release history
+- **[📝 Changelog](https://s-celles.github.io/ipecmd-wrapper/changelog/)** - Release history
 
 ## 📄 License
 

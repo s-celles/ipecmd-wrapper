@@ -191,14 +191,14 @@ The project uses GitHub Actions for CI/CD:
 ## Release Process
 
 1. Update version in `pyproject.toml`
-2. Update `CHANGELOG.md`
+2. Update `docs/changelog.md`
 3. Create and push git tag
 4. GitHub Actions automatically builds and publishes to PyPI
 5. Update documentation
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
+See [contributing.md](contributing.md) for detailed contribution guidelines.
 
 ## License
 

@@ -1,8 +1,8 @@
 include README.md
 include LICENSE
-include CHANGELOG.md
-include CONTRIBUTING.md
-include DEVELOPMENT.md
+include docs/changelog.md
+include docs/contributing.md
+include docs/development.md
 include pyproject.toml
 include pytest.ini
 include tox.ini

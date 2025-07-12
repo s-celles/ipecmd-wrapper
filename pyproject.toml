@@ -59,7 +59,7 @@ Homepage = "https://s-celles.github.io/ipecmd-wrapper/"
 Documentation = "https://s-celles.github.io/ipecmd-wrapper/"
 Repository = "https://github.com/s-celles/ipecmd-wrapper"
 Issues = "https://github.com/s-celles/ipecmd-wrapper/issues"
-Changelog = "https://github.com/s-celles/ipecmd-wrapper/blob/main/CHANGELOG.md"
+Changelog = "https://s-celles.github.io/ipecmd-wrapper/changelog/"
 
 [project.scripts]
 ipecmd-wrapper = "ipecmd_wrapper.cli:main"
