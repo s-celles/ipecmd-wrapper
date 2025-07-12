@@ -43,6 +43,7 @@ dev = [
     "isort>=5.0",
     "bandit>=1.7",
     "safety>=2.0",
+    "commitizen>=3.0",
     # Ensure we have proper packaging tools for all platforms
     "setuptools>=45",
     "wheel>=0.37",
@@ -178,3 +179,11 @@ per-file-ignores = [
     "tests/*:S101",
     "setup_dev.py:S404,S602",
 ]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_scheme = "pep440"
+version_provider = "pep621"
+update_changelog_on_bump = true
+major_version_zero = true
