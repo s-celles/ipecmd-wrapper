@@ -218,5 +218,6 @@ site/
 # Pre-commit
 .pre-commit-config.yaml.backup
 
-# MPLABX
+# Vendor files
 MPLABXLog.xml
+vendor/
