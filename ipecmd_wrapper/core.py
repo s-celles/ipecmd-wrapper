@@ -167,7 +167,10 @@ def build_ipecmd_command(args: Any, ipecmd_path: str) -> list[str]:
     cmd_args.append(f"-{tool_option}")
 
     # Add part selection
-    cmd_args.append(f"-P{args.part}")
+    if args.part[:3] == "PIC":
+        cmd_args.append(f"-P{args.part[3:]}")
+    else:
+        cmd_args.append(f"-P{args.part}")
 
     # Add hex file (if provided)
     if args.file:
