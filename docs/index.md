@@ -10,7 +10,7 @@ IPECMD Wrapper provides a clean, Pythonic interface to the IPECMD command-line t
     This project is currently in active development. APIs may change between versions.
 
 !!! info "AI-Generated Content Notice"
-A significant portion of this project's content (including code, documentation, and examples) has been generated using AI assistance. Please review all code and documentation carefully before use in production environments. We recommend thorough testing and validation of any AI-generated components.
+    A significant portion of this project's content (including code, documentation, and examples) has been generated using AI assistance. Please review all code and documentation carefully before use in production environments. We recommend thorough testing and validation of any AI-generated components.
 
 ## ✨ Features
 
