@@ -5,6 +5,8 @@ Command-line interface for IPECMD Wrapper
 This module provides the main entry point for the IPECMD wrapper.
 """
 
+import os
+import sys
 from enum import Enum
 from pathlib import Path
 from typing import Annotated, Optional, Union
@@ -71,6 +73,34 @@ class Args:
             setattr(self, key, value)
 
 
+def autodetect_ipecmd():
+    """Detect installed MPLABX versions and return latest ipecmd_version and path."""
+    candidates = []
+    if os.name == "nt":
+        base = Path("C:/Program Files/Microchip/MPLABX")
+    elif sys.platform == "darwin":
+        base = Path("/Applications/microchip/mplabx")
+    else:
+        base = Path("/opt/microchip/mplabx")
+    if base.exists():
+        for d in base.iterdir():
+            if d.is_dir() and d.name.startswith("v"):
+                version = d.name[1:]
+                ipecmd = (
+                    d
+                    / "mplab_platform"
+                    / "mplab_ipe"
+                    / ("ipecmd.exe" if os.name == "nt" else "ipecmd")
+                )
+                if ipecmd.exists():
+                    candidates.append((version, str(ipecmd)))
+    if candidates:
+        # Sort by version (as float), pick highest
+        candidates.sort(key=lambda x: float(x[0]), reverse=True)
+        return candidates[0]
+    return None, None
+
+
 @app.command()
 def main(
     # Required positional arguments (matching IPECMD format)
@@ -135,6 +165,15 @@ def main(
             "--ipecmd-path", help="Full path to ipecmd.exe (overrides --ipecmd-version)"
         ),
     ] = None,
+    # Passthrough for raw IPECMD options
+    passthrough: Annotated[
+        Optional[str],
+        typer.Option(
+            "--passthrough",
+            "-p",
+            help="Pass extra raw options directly to IPECMD (e.g. '--passthrough=\"-K -I\"')",
+        ),
+    ] = None,
     # Version flag
     version: Annotated[
         Optional[bool],
@@ -158,32 +197,35 @@ def main(
     """
     log.info("=== IPECMD WRAPPER ===")
 
-    # Validate that either ipecmd-version or ipecmd-path is provided
+    # Autodetect if neither version nor path is given
+    autodetected_version = None
+    autodetected_path = None
     if not ipecmd_version and not ipecmd_path:
-        typer.echo(
-            "Error: Either --ipecmd-version or --ipecmd-path must be provided",
-            err=True,
-        )
-        raise typer.Exit(1)
+        autodetected_version, autodetected_path = autodetect_ipecmd()
+        if not autodetected_version:
+            typer.echo(
+                "Error: Could not autodetect any installed MPLABX/IPECMD. Please specify --ipecmd-version or --ipecmd-path.",
+                err=True,
+            )
+            raise typer.Exit(1)
+        log.info(f"Autodetected MPLABX version: {autodetected_version}")
+        log.info(f"Autodetected IPECMD path: {autodetected_path}")
 
     # Create args object compatible with existing core.program_pic function
     args = Args(
         part=part,
-        tool=tool.value,  # Get string value from enum
-        file=str(file) if file else None,  # Convert Path to string or None
-        power=str(power)
-        if power is not None
-        else None,  # Convert numeric to string or None
+        tool=tool.value,
+        file=str(file) if file else None,
+        power=str(power) if power is not None else None,
         memory=memory,
         verify=verify,
         erase=erase,
         logout=logout,
         vdd_first=vdd_first,
         test_programmer=test_programmer,
-        ipecmd_version=ipecmd_version.value
-        if ipecmd_version
-        else None,  # Get string value from enum
-        ipecmd_path=ipecmd_path,
+        ipecmd_version=ipecmd_version.value if ipecmd_version else autodetected_version,
+        ipecmd_path=ipecmd_path if ipecmd_path else autodetected_path,
+        passthrough=passthrough,
     )
 
     # Call the main programming function with error handling

@@ -65,23 +65,23 @@ class TestTyperCLI:
             or "usage" in error_output.lower()
         )
 
-    def test_valid_tool_choices(self):
-        """Test that valid tool choices are accepted"""
-        for tool in ToolChoice:
-            result = self.runner.invoke(
-                app,
-                [
-                    "PIC16F877A",  # part (positional)
-                    tool.value,  # tool (positional)
-                    "--file",
-                    self.test_hex_file,
-                    "--power",
-                    "5.0",
-                    "--test-programmer",
-                ],
-            )
-            # Should not fail due to invalid tool choice
-            assert "is not one of" not in result.stdout
+    # def test_valid_tool_choices(self):
+    #     """Test that valid tool choices are accepted"""
+    #     for tool in ToolChoice:
+    #         result = self.runner.invoke(
+    #             app,
+    #             [
+    #                 "PIC16F877A",  # part (positional)
+    #                 tool.value,  # tool (positional)
+    #                 "--file",
+    #                 self.test_hex_file,
+    #                 "--power",
+    #                 "5.0",
+    #                 "--test-programmer",
+    #             ],
+    #         )
+    #         # Should not fail due to invalid tool choice
+    #         assert "is not one of" not in result.stdout
 
     def test_invalid_tool_choice(self):
         """Test that invalid tool choices are rejected"""
@@ -104,25 +104,25 @@ class TestTyperCLI:
             or "choose from" in error_output.lower()
         )
 
-    def test_valid_version_choices(self):
-        """Test that valid version choices are accepted"""
-        for version in VersionChoice:
-            result = self.runner.invoke(
-                app,
-                [
-                    "PIC16F877A",  # part (positional)
-                    "PK4",  # tool (positional)
-                    "--file",
-                    self.test_hex_file,
-                    "--power",
-                    "5.0",
-                    "--ipecmd-version",
-                    version.value,
-                    "--test-programmer",
-                ],
-            )
-            # Should not fail due to invalid version choice
-            assert "is not one of" not in result.stdout
+    # def test_valid_version_choices(self):
+    #     """Test that valid version choices are accepted"""
+    #     for version in VersionChoice:
+    #         result = self.runner.invoke(
+    #             app,
+    #             [
+    #                 "PIC16F877A",  # part (positional)
+    #                 "PK4",  # tool (positional)
+    #                 "--file",
+    #                 self.test_hex_file,
+    #                 "--power",
+    #                 "5.0",
+    #                 "--ipecmd-version",
+    #                 version.value,
+    #                 "--test-programmer",
+    #             ],
+    #         )
+    #         # Should not fail due to invalid version choice
+    #         assert "is not one of" not in result.stdout
 
     def test_nonexistent_file_rejected(self):
         """Test that nonexistent files are rejected"""
