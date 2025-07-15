@@ -151,7 +151,7 @@ class TestCommandBuilding:
         expected_args = [
             "ipecmd.exe",
             "-TPPK3",
-            "-PPIC16F876A",
+            "-P16F876A",
             "-Ftest.hex",
             "-M",
             "-W5.0",
@@ -178,7 +178,7 @@ class TestCommandBuilding:
         expected_args = [
             "ipecmd.exe",
             "-TPPK4",
-            "-PPIC18F4550",
+            "-P18F4550",
             "-Fprogram.hex",
             "-MP",
             "-YP",
