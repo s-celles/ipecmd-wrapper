@@ -202,6 +202,14 @@ def build_ipecmd_command(args: Any, ipecmd_path: str) -> list[str]:
     if args.logout:
         cmd_args.append("-OL")
 
+    # Add passthrough options
+    if args.passthrough:
+        # Split passthrough string into arguments, respecting quotes
+        import shlex
+
+        passthrough_args = shlex.split(args.passthrough)
+        cmd_args.extend(passthrough_args)
+
     return cmd_args
 
 
