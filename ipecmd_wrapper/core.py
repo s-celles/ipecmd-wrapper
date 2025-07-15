@@ -4,6 +4,8 @@ Core functionality for IPECMD wrapper
 This module contains the main functions for interacting with MPLAB IPE's IPECMD tool.
 """
 
+import shlex
+import re
 import subprocess  # nosec B404
 import sys
 from pathlib import Path
@@ -202,14 +204,6 @@ def build_ipecmd_command(args: Any, ipecmd_path: str) -> list[str]:
     if args.logout:
         cmd_args.append("-OL")
 
-    # Add passthrough options
-    if args.passthrough:
-        # Split passthrough string into arguments, respecting quotes
-        import shlex
-
-        passthrough_args = shlex.split(args.passthrough)
-        cmd_args.extend(passthrough_args)
-
     return cmd_args
 
 
@@ -324,6 +318,42 @@ def execute_programming(
     except Exception as e:
         log.error(f"Error running programming command: {e}")
         return False
+
+
+def is_safe_passthrough(passthrough: str) -> bool:
+    # Reject dangerous shell metacharacters
+    if re.search(r"[;&|`$><]", passthrough):
+        return False
+    # Optionally, add more checks or a whitelist
+    return True
+
+
+def run_cmd_with_passthrough_option(args: Any) -> None:
+    """
+    Main function to run a passthrough command
+    """
+    log.info("Running command...")
+
+    cmd_args = [args.ipecmd_path]
+
+    if not is_safe_passthrough(args.passthrough):
+        log.error("Unsafe passthrough argument detected!")
+        raise ValueError("Unsafe passthrough argument")
+
+    # Split passthrough string into arguments, respecting quotes
+    passthrough_args = shlex.split(args.passthrough)
+
+    cmd_args.extend(passthrough_args)
+
+    log.info(f"Command: {cmd_args}")
+    try:
+        result = subprocess.run(cmd_args, capture_output=True, text=True)  # nosec B603
+        if result.stdout:
+            print(result.stdout)
+        if result.stderr:
+            print(result.stderr)
+    except Exception as e:
+        log.error(f"Error running programmer detection: {e}")
 
 
 def program_pic(args: Any) -> None:

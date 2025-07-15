@@ -13,7 +13,7 @@ from typing import Annotated, Optional, Union
 
 import typer
 
-from .core import program_pic
+from .core import program_pic, run_cmd_with_passthrough_option
 from .logger import log
 
 # Version information
@@ -103,9 +103,14 @@ def autodetect_ipecmd():
 
 @app.command()
 def main(
-    # Required positional arguments (matching IPECMD format)
-    part: Annotated[str, typer.Argument(help="Part Selection")],
-    tool: Annotated[ToolChoice, typer.Argument(help="Tool Selection")],
+    part: Annotated[
+        Optional[str],
+        typer.Argument(help="Part Selection"),
+    ] = None,
+    tool: Annotated[
+        Optional[ToolChoice],
+        typer.Argument(help="Tool Selection"),
+    ] = None,
     # Optional file and power arguments
     file: Annotated[
         Optional[Path],
@@ -165,6 +170,13 @@ def main(
             "--ipecmd-path", help="Full path to ipecmd.exe (overrides --ipecmd-version)"
         ),
     ] = None,
+    ipecmd_help: Annotated[
+        Optional[bool],
+        typer.Option(
+            "--ipecmd-help",
+            help="Show IPECMD help output and exit",
+        ),
+    ] = None,
     # Passthrough for raw IPECMD options
     passthrough: Annotated[
         Optional[str],
@@ -211,10 +223,34 @@ def main(
         log.info(f"Autodetected MPLABX version: {autodetected_version}")
         log.info(f"Autodetected IPECMD path: {autodetected_path}")
 
+    # Handle --ipecmd-help
+    if ipecmd_help:
+        autodetected_version = None
+        autodetected_path = None
+        if not ipecmd_version and not ipecmd_path:
+            autodetected_version, autodetected_path = autodetect_ipecmd()
+        ipecmd_path_final = ipecmd_path if ipecmd_path else autodetected_path
+        if not ipecmd_path_final:
+            typer.echo("Error: Could not determine IPECMD path.", err=True)
+            raise typer.Exit(1)
+        import subprocess
+
+        try:
+            result = subprocess.run(
+                [ipecmd_path_final, "-?"], capture_output=True, text=True
+            )
+            typer.echo(result.stdout)
+            if result.stderr:
+                typer.echo(result.stderr, err=True)
+        except Exception as e:
+            typer.echo(f"Error running IPECMD help: {e}", err=True)
+            raise typer.Exit(1)
+        raise typer.Exit()
+
     # Create args object compatible with existing core.program_pic function
     args = Args(
         part=part,
-        tool=tool.value,
+        tool=tool.value if tool else None,
         file=str(file) if file else None,
         power=str(power) if power is not None else None,
         memory=memory,
@@ -227,6 +263,23 @@ def main(
         ipecmd_path=ipecmd_path if ipecmd_path else autodetected_path,
         passthrough=passthrough,
     )
+
+    if passthrough:
+        # Call the main programming function with error handling
+        try:
+            run_cmd_with_passthrough_option(args)
+        except (ValueError, FileNotFoundError) as e:
+            log.error(f"Error: {e}")
+            raise typer.Exit(1) from e
+        except Exception as e:
+            log.error(f"Unexpected error: {e}")
+            raise typer.Exit(1) from None
+        raise typer.Exit()
+
+    # Validate required positional arguments for normal operation
+    if part is None or tool is None:
+        typer.echo("Error: Missing required arguments: part and tool", err=True)
+        raise typer.Exit(1)
 
     # Call the main programming function with error handling
     try:
