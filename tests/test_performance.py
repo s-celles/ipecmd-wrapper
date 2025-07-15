@@ -244,9 +244,9 @@ class TestScalability:
             execution_time = end_time - start_time
 
             # Should handle long paths efficiently
-            assert (
-                execution_time < 1.0
-            ), f"Long path validation too slow: {execution_time:.3f}s"
+            assert execution_time < 1.0, (
+                f"Long path validation too slow: {execution_time:.3f}s"
+            )
 
     def test_concurrent_operations_simulation(self):
         """Test behavior under simulated concurrent load"""
@@ -288,9 +288,9 @@ class TestScalability:
                 pytest.fail(f"Thread failed: {result}")
 
         # All threads should complete successfully
-        assert (
-            success_count == 10
-        ), f"Only {success_count}/10 threads completed successfully"
+        assert success_count == 10, (
+            f"Only {success_count}/10 threads completed successfully"
+        )
 
 
 if __name__ == "__main__":
