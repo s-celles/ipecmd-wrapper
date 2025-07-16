@@ -1,6 +1,6 @@
 # 🔧 IPECMD Wrapper
 
-A modern Python wrapper for the IPECMD toolchain, designed for programming PIC microcontrollers with a beautiful, validated CLI interface.
+A modern Python wrapper for the IPECMD command line interface (CLI) program, designed for programming PIC microcontrollers with a beautiful, validated CLI interface.
 
 ## 🌟 Overview
 
