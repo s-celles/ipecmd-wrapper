@@ -53,3 +53,11 @@ The Python wrapper code in this package is released under the **MIT License** (s
 
 **Wrapper Code**: MIT License (see LICENSE file)
 **Microchip MPLAB IPE Tools**: Proprietary Microchip licenses (separate licensing required)
+
+---
+
+<div align="center">
+
+Made with ❤️ by [Sébastien Celles](https://github.com/s-celles) for the PIC developer community.
+
+</div>
