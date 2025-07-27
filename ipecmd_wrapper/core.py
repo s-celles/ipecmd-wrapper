@@ -54,55 +54,57 @@ TOOL_MAP = {
 def detect_latest_ipecmd_version() -> Optional[str]:
     """
     Auto-detect the latest installed MPLAB X IDE version
-    
+
     Returns:
         str: Latest detected version (e.g., '6.20') or None if not found
     """
     import os
-    
+
     log.info("Auto-detecting MPLAB X IDE version...")
-    
+
     # Define base paths for different platforms
     if sys.platform == "win32":
         base_paths = [
             Path("C:/Program Files/Microchip/MPLABX"),
-            Path("C:/Program Files (x86)/Microchip/MPLABX")
+            Path("C:/Program Files (x86)/Microchip/MPLABX"),
         ]
     elif sys.platform == "darwin":  # macOS
         base_paths = [Path("/Applications/microchip/mplabx")]
     else:  # Linux and other Unix systems
         base_paths = [Path("/opt/microchip/mplabx")]
-    
+
     detected_versions = []
-    
+
     for base_path in base_paths:
         if not base_path.exists():
             continue
-            
+
         try:
             # Look for version directories (e.g., v6.20, v6.15, etc.)
             for item in base_path.iterdir():
-                if item.is_dir() and item.name.startswith('v'):
+                if item.is_dir() and item.name.startswith("v"):
                     version_str = item.name[1:]  # Remove 'v' prefix
-                    
+
                     # Check if ipecmd exists in this version
                     if sys.platform == "win32":
-                        ipecmd_path = item / "mplab_platform" / "mplab_ipe" / "ipecmd.exe"
+                        ipecmd_path = (
+                            item / "mplab_platform" / "mplab_ipe" / "ipecmd.exe"
+                        )
                     else:
                         ipecmd_path = item / "mplab_platform" / "mplab_ipe" / "ipecmd"
-                    
+
                     if ipecmd_path.exists():
                         detected_versions.append(version_str)
                         log.info(f"Found MPLAB X v{version_str}")
-                        
+
         except (PermissionError, OSError) as e:
             log.debug(f"Could not scan {base_path}: {e}")
             continue
-    
+
     if not detected_versions:
         log.warning("No MPLAB X IDE installations found")
         return None
-    
+
     # Sort versions and return the latest
     # Convert to float for proper numeric sorting
     try:
@@ -146,7 +148,7 @@ def get_ipecmd_path(
                 "No MPLAB X IDE installation found. "
                 "Please install MPLAB X IDE or specify custom path with --ipecmd-path"
             )
-    
+
     # Cross-platform path handling using pathlib
     if sys.platform == "win32":
         path = (
@@ -444,7 +446,7 @@ def program_pic(args: Any) -> None:
     # Determine IPECMD path
     version_info = ""
     detected_version = None
-    
+
     if args.ipecmd_path:
         ipecmd_path = args.ipecmd_path
         version_info = "custom path"
