@@ -51,6 +51,72 @@ TOOL_MAP = {
 }
 
 
+def detect_latest_ipecmd_version() -> Optional[str]:
+    """
+    Auto-detect the latest installed MPLAB X IDE version
+    
+    Returns:
+        str: Latest detected version (e.g., '6.20') or None if not found
+    """
+    import os
+    
+    log.info("Auto-detecting MPLAB X IDE version...")
+    
+    # Define base paths for different platforms
+    if sys.platform == "win32":
+        base_paths = [
+            Path("C:/Program Files/Microchip/MPLABX"),
+            Path("C:/Program Files (x86)/Microchip/MPLABX")
+        ]
+    elif sys.platform == "darwin":  # macOS
+        base_paths = [Path("/Applications/microchip/mplabx")]
+    else:  # Linux and other Unix systems
+        base_paths = [Path("/opt/microchip/mplabx")]
+    
+    detected_versions = []
+    
+    for base_path in base_paths:
+        if not base_path.exists():
+            continue
+            
+        try:
+            # Look for version directories (e.g., v6.20, v6.15, etc.)
+            for item in base_path.iterdir():
+                if item.is_dir() and item.name.startswith('v'):
+                    version_str = item.name[1:]  # Remove 'v' prefix
+                    
+                    # Check if ipecmd exists in this version
+                    if sys.platform == "win32":
+                        ipecmd_path = item / "mplab_platform" / "mplab_ipe" / "ipecmd.exe"
+                    else:
+                        ipecmd_path = item / "mplab_platform" / "mplab_ipe" / "ipecmd"
+                    
+                    if ipecmd_path.exists():
+                        detected_versions.append(version_str)
+                        log.info(f"Found MPLAB X v{version_str}")
+                        
+        except (PermissionError, OSError) as e:
+            log.debug(f"Could not scan {base_path}: {e}")
+            continue
+    
+    if not detected_versions:
+        log.warning("No MPLAB X IDE installations found")
+        return None
+    
+    # Sort versions and return the latest
+    # Convert to float for proper numeric sorting
+    try:
+        sorted_versions = sorted(detected_versions, key=float, reverse=True)
+        latest_version = sorted_versions[0]
+        log.info(f"Auto-detected latest MPLAB X version: v{latest_version}")
+        return latest_version
+    except ValueError:
+        # Fallback: return the last one alphabetically
+        latest_version = sorted(detected_versions)[-1]
+        log.info(f"Auto-detected MPLAB X version: v{latest_version}")
+        return latest_version
+
+
 def get_ipecmd_path(
     version: Optional[str] = None, custom_path: Optional[str] = None
 ) -> str:
@@ -65,40 +131,49 @@ def get_ipecmd_path(
         str: Path to ipecmd.exe
 
     Raises:
-        ValueError: If neither version nor custom_path is provided
+        ValueError: If no IPECMD installation can be found
     """
     if custom_path:
         return custom_path
     elif version:
-        # Cross-platform path handling using pathlib
-        if sys.platform == "win32":
-            path = (
-                Path("C:/Program Files/Microchip/MPLABX")
-                / f"v{version}"
-                / "mplab_platform"
-                / "mplab_ipe"
-                / "ipecmd.exe"
-            )
-        elif sys.platform == "darwin":  # macOS
-            path = (
-                Path("/Applications/microchip/mplabx")
-                / f"v{version}"
-                / "mplab_platform"
-                / "mplab_ipe"
-                / "ipecmd"
-            )
-        else:  # Linux and other Unix systems
-            path = (
-                Path("/opt/microchip/mplabx")
-                / f"v{version}"
-                / "mplab_platform"
-                / "mplab_ipe"
-                / "ipecmd"
-            )
-
-        return path.as_posix()
+        # Use specified version
+        target_version = version
     else:
-        raise ValueError("Either version or custom_path must be provided")
+        # Auto-detect latest version
+        target_version = detect_latest_ipecmd_version()
+        if not target_version:
+            raise ValueError(
+                "No MPLAB X IDE installation found. "
+                "Please install MPLAB X IDE or specify custom path with --ipecmd-path"
+            )
+    
+    # Cross-platform path handling using pathlib
+    if sys.platform == "win32":
+        path = (
+            Path("C:/Program Files/Microchip/MPLABX")
+            / f"v{target_version}"
+            / "mplab_platform"
+            / "mplab_ipe"
+            / "ipecmd.exe"
+        )
+    elif sys.platform == "darwin":  # macOS
+        path = (
+            Path("/Applications/microchip/mplabx")
+            / f"v{target_version}"
+            / "mplab_platform"
+            / "mplab_ipe"
+            / "ipecmd"
+        )
+    else:  # Linux and other Unix systems
+        path = (
+            Path("/opt/microchip/mplabx")
+            / f"v{target_version}"
+            / "mplab_platform"
+            / "mplab_ipe"
+            / "ipecmd"
+        )
+
+    return path.as_posix()
 
 
 def validate_ipecmd(ipecmd_path: str, version_info: str) -> bool:
@@ -368,12 +443,26 @@ def program_pic(args: Any) -> None:
     """
     # Determine IPECMD path
     version_info = ""
+    detected_version = None
+    
     if args.ipecmd_path:
         ipecmd_path = args.ipecmd_path
         version_info = "custom path"
     else:
-        ipecmd_path = get_ipecmd_path(version=args.ipecmd_version)
-        version_info = f"v{args.ipecmd_version}"
+        # Get the path and potentially detect version
+        if args.ipecmd_version:
+            ipecmd_path = get_ipecmd_path(version=args.ipecmd_version)
+            version_info = f"v{args.ipecmd_version}"
+        else:
+            # Auto-detect latest version
+            detected_version = detect_latest_ipecmd_version()
+            if detected_version:
+                ipecmd_path = get_ipecmd_path(version=detected_version)
+                version_info = f"v{detected_version} (auto-detected)"
+                log.info(f"Auto-detected MPLAB X v{detected_version}")
+            else:
+                log.error("Could not auto-detect MPLAB X installation")
+                sys.exit(1)
 
     # Validate HEX file (if provided)
     if args.file and not validate_hex_file(args.file):
@@ -399,5 +488,6 @@ def program_pic(args: Any) -> None:
     cmd_args = build_ipecmd_command(args, ipecmd_path)
 
     # Execute programming
-    if not execute_programming(cmd_args, args.part, args.tool, args.ipecmd_version):
+    version_for_errors = detected_version or args.ipecmd_version
+    if not execute_programming(cmd_args, args.part, args.tool, version_for_errors):
         sys.exit(1)
