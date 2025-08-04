@@ -1,3 +1,5 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/s-celles/ipecmd-wrapper)
+
 # 🔧 IPECMD Wrapper
 
 A Python wrapper for Microchip's IPECMD tool for PIC microcontroller programming.
