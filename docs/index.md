@@ -59,9 +59,7 @@ from ipecmd_wrapper import upload_firmware
 
 # Upload firmware to PIC
 success = upload_firmware(
-    hex_file="firmware.hex",
-    device="PIC16F876A",
-    programmer="pickit3"
+    hex_file="firmware.hex", device="PIC16F876A", programmer="pickit3"
 )
 
 if success:
