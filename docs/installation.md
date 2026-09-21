@@ -66,6 +66,7 @@ Or in Python:
 
 ```python
 import ipecmd_wrapper
+
 print(ipecmd_wrapper.__version__)
 ```
 
