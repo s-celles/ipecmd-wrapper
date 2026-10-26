@@ -22,9 +22,7 @@ Upload firmware to a PIC microcontroller.
 from ipecmd_wrapper import upload_firmware
 
 success = upload_firmware(
-    hex_file="firmware.hex",
-    device="PIC16F876A",
-    programmer="pickit3"
+    hex_file="firmware.hex", device="PIC16F876A", programmer="pickit3"
 )
 ```
 
@@ -56,7 +54,7 @@ program_pic(
     file="firmware.hex",
     power=5.0,
     erase=True,
-    verify="P"
+    verify="P",
 )
 ```
 
@@ -98,7 +96,7 @@ from ipecmd_wrapper.core import validate_ipecmd
 
 is_valid = validate_ipecmd(
     "C:\\Program Files\\Microchip\\MPLABX\\v6.20\\mplab_platform\\mplab_ipe\\ipecmd.exe",
-    "6.20"
+    "6.20",
 )
 ```
 
@@ -136,10 +134,7 @@ Build IPECMD command line arguments.
 from ipecmd_wrapper.core import build_ipecmd_command
 
 cmd = build_ipecmd_command(
-    part="PIC16F876A",
-    tool="PK3",
-    file="firmware.hex",
-    power=5.0
+    part="PIC16F876A", tool="PK3", file="firmware.hex", power=5.0
 )
 print(f"Command: {' '.join(cmd)}")
 ```
@@ -161,9 +156,7 @@ Test programmer detection.
 from ipecmd_wrapper.core import test_programmer_detection
 
 detected = test_programmer_detection(
-    ipecmd_path="ipecmd.exe",
-    part="PIC16F876A",
-    tool="PK3"
+    ipecmd_path="ipecmd.exe", part="PIC16F876A", tool="PK3"
 )
 ```
 
@@ -195,7 +188,7 @@ Mapping of tool names to IPECMD identifiers:
 ```python
 from ipecmd_wrapper.core import TOOL_MAP
 
-print(TOOL_MAP['PK3'])  # PICkit 3 identifier
+print(TOOL_MAP["PK3"])  # PICkit 3 identifier
 ```
 
 ## CLI Functions
@@ -212,7 +205,9 @@ Create command-line argument parser.
 from ipecmd_wrapper.cli import create_argument_parser
 
 parser = create_argument_parser()
-args = parser.parse_args(["-P", "PIC16F876A", "-T", "PK3", "-F", "firmware.hex", "-W", "5.0"])
+args = parser.parse_args(
+    ["-P", "PIC16F876A", "-T", "PK3", "-F", "firmware.hex", "-W", "5.0"]
+)
 ```
 
 ### `main(args=None)`
@@ -258,13 +253,14 @@ You can set environment variables to configure defaults:
 import os
 
 # Set default IPECMD path
-os.environ['IPECMD_PATH'] = '/custom/path/to/ipecmd'
+os.environ["IPECMD_PATH"] = "/custom/path/to/ipecmd"
 
 # Set default programmer
-os.environ['PIC_PROGRAMMER'] = 'PK4'
+os.environ["PIC_PROGRAMMER"] = "PK4"
 
 # Now use the API
 from ipecmd_wrapper import upload_firmware
+
 upload_firmware("firmware.hex", "PIC16F876A", "pickit4")
 ```
 
