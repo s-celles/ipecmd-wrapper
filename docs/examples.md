@@ -89,9 +89,7 @@ from ipecmd_wrapper import upload_firmware
 
 # Simple upload
 success = upload_firmware(
-    hex_file="dist/firmware.hex",
-    device="PIC16F876A",
-    programmer="pickit3"
+    hex_file="dist/firmware.hex", device="PIC16F876A", programmer="pickit3"
 )
 
 if success:
@@ -113,7 +111,7 @@ try:
         power=5.0,
         erase=True,
         verify="P",
-        memory="P"
+        memory="P",
     )
     print("✅ Programming and verification successful!")
 except Exception as e:
@@ -136,9 +134,7 @@ devices = [
 for config in devices:
     if os.path.exists(config["hex"]):
         success = upload_firmware(
-            hex_file=config["hex"],
-            device=config["device"],
-            programmer="pickit3"
+            hex_file=config["hex"], device=config["device"], programmer="pickit3"
         )
         print(f"{config['device']}: {'✅ Success' if success else '❌ Failed'}")
     else:
@@ -178,13 +174,10 @@ import sys
 from pathlib import Path
 from ipecmd_wrapper import upload_firmware
 
+
 def compile_project():
     """Compile the project using XC8"""
-    cmd = [
-        "xc8-cc", "main.c",
-        "-mcpu=PIC16F876A",
-        "-o", "firmware.hex"
-    ]
+    cmd = ["xc8-cc", "main.c", "-mcpu=PIC16F876A", "-o", "firmware.hex"]
 
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
@@ -194,6 +187,7 @@ def compile_project():
     print("✅ Compilation successful!")
     return True
 
+
 def program_device():
     """Program the device"""
     if not Path("firmware.hex").exists():
@@ -201,9 +195,7 @@ def program_device():
         return False
 
     success = upload_firmware(
-        hex_file="firmware.hex",
-        device="PIC16F876A",
-        programmer="pickit3"
+        hex_file="firmware.hex", device="PIC16F876A", programmer="pickit3"
     )
 
     if success:
@@ -213,6 +205,7 @@ def program_device():
 
     return success
 
+
 def main():
     """Main build and program workflow"""
     if len(sys.argv) > 1 and sys.argv[1] == "program-only":
@@ -221,6 +214,7 @@ def main():
         success = compile_project() and program_device()
 
     sys.exit(0 if success else 1)
+
 
 if __name__ == "__main__":
     main()
@@ -290,6 +284,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def robust_program(hex_file, device, programmer):
     """Program device with comprehensive error handling"""
 
@@ -300,6 +295,7 @@ def robust_program(hex_file, device, programmer):
 
     # Get IPECMD path and validate
     from ipecmd_wrapper.core import get_ipecmd_path
+
     ipecmd_path = get_ipecmd_path()
 
     if not validate_ipecmd(ipecmd_path, "6.20"):
@@ -318,7 +314,7 @@ def robust_program(hex_file, device, programmer):
                 file=hex_file,
                 power=5.0,
                 erase=True,
-                verify="P"
+                verify="P",
             )
 
             logger.info("✅ Programming successful!")
@@ -331,6 +327,7 @@ def robust_program(hex_file, device, programmer):
                 return False
 
     return False
+
 
 # Usage
 success = robust_program("firmware.hex", "PIC16F876A", "PK3")
@@ -368,7 +365,7 @@ import json
 from ipecmd_wrapper.core import program_pic
 
 # Load project configuration
-with open('.ipecmd-wrapper.json', 'r') as f:
+with open(".ipecmd-wrapper.json", "r") as f:
     config = json.load(f)
 
 # Program main firmware
@@ -377,7 +374,7 @@ program_pic(
     tool=config["programmer"],
     file=config["hex_files"]["main"],
     power=config["power"],
-    **config["default_options"]
+    **config["default_options"],
 )
 ```
 
@@ -390,39 +387,30 @@ import unittest
 from unittest.mock import patch, MagicMock
 from ipecmd_wrapper.core import program_pic
 
-class TestProgramming(unittest.TestCase):
 
-    @patch('ipecmd_wrapper.core.subprocess.run')
+class TestProgramming(unittest.TestCase):
+    @patch("ipecmd_wrapper.core.subprocess.run")
     def test_successful_programming(self, mock_run):
         """Test successful programming scenario"""
         mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
 
         # Should not raise exception
         try:
-            program_pic(
-                part="PIC16F876A",
-                tool="PK3",
-                file="test.hex",
-                power=5.0
-            )
+            program_pic(part="PIC16F876A", tool="PK3", file="test.hex", power=5.0)
         except Exception as e:
             self.fail(f"Programming should succeed: {e}")
 
-    @patch('ipecmd_wrapper.core.subprocess.run')
+    @patch("ipecmd_wrapper.core.subprocess.run")
     def test_programming_failure(self, mock_run):
         """Test programming failure scenario"""
         mock_run.return_value = MagicMock(returncode=1, stdout="", stderr="Error")
 
         # Should raise exception
         with self.assertRaises(RuntimeError):
-            program_pic(
-                part="PIC16F876A",
-                tool="PK3",
-                file="test.hex",
-                power=5.0
-            )
+            program_pic(part="PIC16F876A", tool="PK3", file="test.hex", power=5.0)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
 ```
 

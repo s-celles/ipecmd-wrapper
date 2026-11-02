@@ -98,9 +98,7 @@ ipecmd-wrapper PIC16F876A PK3 --file missing.hex --power 5.0
 from ipecmd_wrapper import upload_firmware
 
 success = upload_firmware(
-    hex_file="firmware.hex",
-    device="PIC16F876A",
-    programmer="pickit3"
+    hex_file="firmware.hex", device="PIC16F876A", programmer="pickit3"
 )
 
 if success:
@@ -122,7 +120,7 @@ program_pic(
     power=5.0,
     erase=True,
     verify="P",
-    memory="P"
+    memory="P",
 )
 ```
 
